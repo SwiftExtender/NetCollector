@@ -1,15 +1,22 @@
 using Microsoft.EntityFrameworkCore;
 using NetFighter.Models;
+using System;
+
 
 namespace NetFighter.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+        private string DbPath { get; }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
+            
         }
-
+        public ApplicationDbContext()
+        {
+            var path = AppDomain.CurrentDomain.BaseDirectory;
+            DbPath = System.IO.Path.Join(path, "data.db");
+        }
         public DbSet<Domains> Domains { get; set; }
         public DbSet<DomainsHosts> DomainsHosts { get; set; }
         public DbSet<Hosts> Hosts { get; set; }
@@ -19,17 +26,20 @@ namespace NetFighter.Data
         public DbSet<Requests> Requests { get; set; }
         public DbSet<ScanProfiles> ScanProfiles { get; set; }
         public DbSet<ScanProfilesStartupProfiles> ScanProfilesStartupProfiles { get; set; }
-        public DbSet<StartupProfiles> StartupProfiles { get; set; }
+        public DbSet<ToolProfiles> StartupProfiles { get; set; }
         public DbSet<Subnets> Subnets { get; set; }
         public DbSet<Tools> Tools { get; set; }
         public DbSet<Urls> Urls { get; set; }
         public DbSet<VhostPorts> VhostPorts { get; set; }
         public DbSet<Vhosts> Vhosts { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-            // Add model configurations here if needed
+            optionsBuilder.UseSqlite($"Data Source={DbPath}");
         }
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    base.OnModelCreating(modelBuilder);
+        //    // Add model configurations here if needed
+        //}
     }
 }

@@ -74,7 +74,7 @@ namespace NetFighter.Controllers
         [Route("/startup_profiles")]
         [ValidateModelState]
         [SwaggerOperation("StartupProfilesGet")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<StartupProfiles>), description: "OK")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<ToolProfiles>), description: "OK")]
         public virtual IActionResult StartupProfilesGet([FromQuery (Name = "id")]string id, [FromQuery (Name = "tool_id")]string toolId, [FromQuery (Name = "name")]string name, [FromQuery (Name = "configuration")]string configuration, [FromQuery (Name = "created_at")]string createdAt, [FromQuery (Name = "updated_at")]string updatedAt, [FromQuery (Name = "select")]string select, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Range")]string range, [FromHeader (Name = "Range-Unit")]string rangeUnit, [FromQuery (Name = "offset")]string offset, [FromQuery (Name = "limit")]string limit, [FromHeader (Name = "Prefer")]string prefer)
         {
 
@@ -86,8 +86,8 @@ namespace NetFighter.Controllers
             exampleJson = "[ {\r\n  \"updated_at\" : \"now()\",\r\n  \"configuration\" : \"{}\",\r\n  \"name\" : \"name\",\r\n  \"tool_id\" : 6,\r\n  \"created_at\" : \"now()\",\r\n  \"id\" : 0\r\n}, {\r\n  \"updated_at\" : \"now()\",\r\n  \"configuration\" : \"{}\",\r\n  \"name\" : \"name\",\r\n  \"tool_id\" : 6,\r\n  \"created_at\" : \"now()\",\r\n  \"id\" : 0\r\n} ]";
             
             var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<StartupProfiles>>(exampleJson)
-            : default(List<StartupProfiles>);
+            ? JsonConvert.DeserializeObject<List<ToolProfiles>>(exampleJson)
+            : default(List<ToolProfiles>);
             //TODO: Change the data returned
             return new ObjectResult(example);
         }
@@ -109,7 +109,7 @@ namespace NetFighter.Controllers
         [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("StartupProfilesPatch")]
-        public virtual IActionResult StartupProfilesPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "tool_id")]string toolId, [FromQuery (Name = "name")]string name, [FromQuery (Name = "configuration")]string configuration, [FromQuery (Name = "created_at")]string createdAt, [FromQuery (Name = "updated_at")]string updatedAt, [FromHeader (Name = "Prefer")]string prefer, [FromBody]StartupProfiles startupProfiles)
+        public virtual IActionResult StartupProfilesPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "tool_id")]string toolId, [FromQuery (Name = "name")]string name, [FromQuery (Name = "configuration")]string configuration, [FromQuery (Name = "created_at")]string createdAt, [FromQuery (Name = "updated_at")]string updatedAt, [FromHeader (Name = "Prefer")]string prefer, [FromBody]ToolProfiles startupProfiles)
         {
 
             //TODO: Uncomment the next line to return response 204 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
@@ -130,7 +130,7 @@ namespace NetFighter.Controllers
         [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("StartupProfilesPost")]
-        public virtual IActionResult StartupProfilesPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]StartupProfiles startupProfiles)
+        public virtual IActionResult StartupProfilesPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]ToolProfiles startupProfiles)
         {
 
             //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...

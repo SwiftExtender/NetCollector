@@ -24,7 +24,7 @@ namespace NetFighter.Models
     /// 
     /// </summary>
     [DataContract]
-    public partial class StartupProfiles : IEquatable<StartupProfiles>
+    public partial class ToolProfiles : IEquatable<ToolProfiles>
     {
         /// <summary>
         /// Note: This is a Primary Key.&lt;pk/&gt;
@@ -54,7 +54,7 @@ namespace NetFighter.Models
         /// </summary>
         [Required]
         [DataMember(Name="configuration", EmitDefaultValue=false)]
-        public Object VarConfiguration { get; set; }
+        public string VarConfiguration { get; set; }
 
         /// <summary>
         /// Gets or Sets CreatedAt
@@ -104,7 +104,7 @@ namespace NetFighter.Models
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((StartupProfiles)obj);
+            return obj.GetType() == GetType() && Equals((ToolProfiles)obj);
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace NetFighter.Models
         /// </summary>
         /// <param name="other">Instance of StartupProfiles to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(StartupProfiles other)
+        public bool Equals(ToolProfiles other)
         {
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -179,12 +179,12 @@ namespace NetFighter.Models
         #region Operators
         #pragma warning disable 1591
 
-        public static bool operator ==(StartupProfiles left, StartupProfiles right)
+        public static bool operator ==(ToolProfiles left, ToolProfiles right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(StartupProfiles left, StartupProfiles right)
+        public static bool operator !=(ToolProfiles left, ToolProfiles right)
         {
             return !Equals(left, right);
         }

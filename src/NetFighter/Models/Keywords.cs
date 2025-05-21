@@ -47,7 +47,11 @@ namespace NetFighter.Models
         /// </summary>
         [Required]
         [DataMember(Name="source", EmitDefaultValue=false)]
-        public Object Source { get; set; }
+        public string Source { get; set; }
+
+        [Required]
+        [DataMember(Name = "source_type", EmitDefaultValue = false)]
+        public string SourceType { get; set; }
 
         /// <summary>
         /// Gets or Sets Info

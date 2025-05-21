@@ -24,6 +24,8 @@ using NetFighter.Authentication;
 using NetFighter.Filters;
 using NetFighter.OpenApi;
 using NetFighter.Formatters;
+using Microsoft.AspNetCore.Http;
+using NetFighter.Data;
 
 namespace NetFighter
 {
@@ -53,6 +55,8 @@ namespace NetFighter
         public void ConfigureServices(IServiceCollection services)
         {
 
+            var tempdb = new ApplicationDbContext();
+            tempdb.Database.EnsureCreated();
             // Add framework services.
             services
                 // Don't need the full MVC stack for an API, see https://andrewlock.net/comparing-startup-between-the-asp-net-core-3-templates/
