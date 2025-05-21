@@ -17,10 +17,10 @@ using Microsoft.AspNetCore.Http;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Newtonsoft.Json;
-using Org.OpenAPITools.Attributes;
-using Org.OpenAPITools.Models;
+using NetFighter.Attributes;
+using NetFighter.Models;
 
-namespace Org.OpenAPITools.Controllers
+namespace NetFighter.Controllers
 { 
     /// <summary>
     /// 

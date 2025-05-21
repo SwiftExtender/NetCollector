@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Org.OpenAPITools.Models;
+using NetFighter.Models;
 
-namespace Org.OpenAPITools.Data
+namespace NetFighter.Data
 {
     public class ApplicationDbContext : DbContext
     {

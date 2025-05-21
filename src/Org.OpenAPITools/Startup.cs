@@ -20,12 +20,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using Org.OpenAPITools.Authentication;
-using Org.OpenAPITools.Filters;
-using Org.OpenAPITools.OpenApi;
-using Org.OpenAPITools.Formatters;
+using NetFighter.Authentication;
+using NetFighter.Filters;
+using NetFighter.OpenApi;
+using NetFighter.Formatters;
 
-namespace Org.OpenAPITools
+namespace NetFighter
 {
     /// <summary>
     /// Startup

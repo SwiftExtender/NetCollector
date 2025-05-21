@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <Description>A library generated from a OpenAPI doc</Description>
     <Copyright>No Copyright</Copyright>
@@ -7,8 +7,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <Version>1.0.0</Version>
-    <AssemblyName>Org.OpenAPITools</AssemblyName>
-    <PackageId>Org.OpenAPITools</PackageId>
+    <AssemblyName>NetFighter</AssemblyName>
+    <PackageId>NetFighter</PackageId>
     <UserSecretsId>74a468d0-af9a-4a18-9a38-37d30b9ec8e5</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>

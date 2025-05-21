@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Org.OpenAPITools.Filters
+namespace NetFighter.Filters
 {
     /// <summary>
     /// Path Parameter Validation Rules Filter
