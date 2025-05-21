@@ -26,7 +26,7 @@ namespace NetFighter.Controllers
     /// 
     /// </summary>
     [ApiController]
-    public class StartupProfilesApiController : ControllerBase
+    public class ToolProfilesApiController : ControllerBase
     { 
         /// <summary>
         /// 
@@ -40,9 +40,9 @@ namespace NetFighter.Controllers
         /// <param name="prefer">Preference</param>
         /// <response code="204">No Content</response>
         [HttpDelete]
-        [Route("/startup_profiles")]
+        [Route("/tool_profiles")]
         [ValidateModelState]
-        [SwaggerOperation("StartupProfilesDelete")]
+        [SwaggerOperation("ToolProfilesDelete")]
         public virtual IActionResult StartupProfilesDelete([FromQuery (Name = "id")]string id, [FromQuery (Name = "tool_id")]string toolId, [FromQuery (Name = "name")]string name, [FromQuery (Name = "configuration")]string configuration, [FromQuery (Name = "created_at")]string createdAt, [FromQuery (Name = "updated_at")]string updatedAt, [FromHeader (Name = "Prefer")]string prefer)
         {
 
@@ -71,9 +71,9 @@ namespace NetFighter.Controllers
         /// <response code="200">OK</response>
         /// <response code="206">Partial Content</response>
         [HttpGet]
-        [Route("/startup_profiles")]
+        [Route("/tool_profiles")]
         [ValidateModelState]
-        [SwaggerOperation("StartupProfilesGet")]
+        [SwaggerOperation("ToolProfilesGet")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<ToolProfiles>), description: "OK")]
         public virtual IActionResult StartupProfilesGet([FromQuery (Name = "id")]string id, [FromQuery (Name = "tool_id")]string toolId, [FromQuery (Name = "name")]string name, [FromQuery (Name = "configuration")]string configuration, [FromQuery (Name = "created_at")]string createdAt, [FromQuery (Name = "updated_at")]string updatedAt, [FromQuery (Name = "select")]string select, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Range")]string range, [FromHeader (Name = "Range-Unit")]string rangeUnit, [FromQuery (Name = "offset")]string offset, [FromQuery (Name = "limit")]string limit, [FromHeader (Name = "Prefer")]string prefer)
         {
@@ -105,10 +105,10 @@ namespace NetFighter.Controllers
         /// <param name="startupProfiles">startup_profiles</param>
         /// <response code="204">No Content</response>
         [HttpPatch]
-        [Route("/startup_profiles")]
+        [Route("/tool_profiles")]
         [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
         [ValidateModelState]
-        [SwaggerOperation("StartupProfilesPatch")]
+        [SwaggerOperation("ToolProfilesPatch")]
         public virtual IActionResult StartupProfilesPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "tool_id")]string toolId, [FromQuery (Name = "name")]string name, [FromQuery (Name = "configuration")]string configuration, [FromQuery (Name = "created_at")]string createdAt, [FromQuery (Name = "updated_at")]string updatedAt, [FromHeader (Name = "Prefer")]string prefer, [FromBody]ToolProfiles startupProfiles)
         {
 
@@ -126,10 +126,10 @@ namespace NetFighter.Controllers
         /// <param name="startupProfiles">startup_profiles</param>
         /// <response code="201">Created</response>
         [HttpPost]
-        [Route("/startup_profiles")]
+        [Route("/tool_profiles")]
         [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
         [ValidateModelState]
-        [SwaggerOperation("StartupProfilesPost")]
+        [SwaggerOperation("ToolProfilesPost")]
         public virtual IActionResult StartupProfilesPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]ToolProfiles startupProfiles)
         {
 
