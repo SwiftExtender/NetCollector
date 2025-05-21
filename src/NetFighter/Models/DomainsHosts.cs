@@ -38,6 +38,8 @@ namespace NetFighter.Models
         [DataMember(Name="host_id", EmitDefaultValue=true)]
         public int HostId { get; set; }
 
+        public Domains Domains { get; set; }
+        public Hosts Hosts { get; set; }
         /// <summary>
         /// Returns the string presentation of the object
         /// </summary>

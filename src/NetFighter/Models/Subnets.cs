@@ -53,6 +53,7 @@ namespace NetFighter.Models
         [DataMember(Name="description", EmitDefaultValue=false)]
         public string Description { get; set; }
 
+        public ICollection<Hosts> Hosts { get; }
         /// <summary>
         /// Returns the string presentation of the object
         /// </summary>

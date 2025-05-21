@@ -17,6 +17,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using NetFighter.Converters;
+using Microsoft.Extensions.Hosting;
 
 namespace NetFighter.Models
 { 
@@ -46,7 +47,7 @@ namespace NetFighter.Models
         /// </summary>
         [DataMember(Name="info", EmitDefaultValue=false)]
         public string Info { get; set; }
-
+        public ICollection<DomainsHosts> DomainsHosts { get; }
         /// <summary>
         /// Returns the string presentation of the object
         /// </summary>

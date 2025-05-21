@@ -46,13 +46,7 @@ namespace NetFighter.Models
         /// </summary>
         [DataMember(Name="info", EmitDefaultValue=false)]
         public string Info { get; set; }
-
-        /// <summary>
-        /// Note: This is a Foreign Key to &#x60;subnets.id&#x60;.&lt;fk table&#x3D;&#39;subnets&#39; column&#x3D;&#39;id&#39;/&gt;
-        /// </summary>
-        /// <value>Note: This is a Foreign Key to &#x60;subnets.id&#x60;.&lt;fk table&#x3D;&#39;subnets&#39; column&#x3D;&#39;id&#39;/&gt;</value>
-        [DataMember(Name="subnet_id", EmitDefaultValue=true)]
-        public int SubnetId { get; set; }
+        public ICollection<DomainsHosts> DomainsHosts { get; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -65,7 +59,7 @@ namespace NetFighter.Models
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Ip: ").Append(Ip).Append("\n");
             sb.Append("  Info: ").Append(Info).Append("\n");
-            sb.Append("  SubnetId: ").Append(SubnetId).Append("\n");
+            //sb.Append("  SubnetId: ").Append(SubnetId).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -101,27 +95,27 @@ namespace NetFighter.Models
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
+            return
                 (
                     Id == other.Id ||
-                    
+
                     Id.Equals(other.Id)
-                ) && 
+                ) &&
                 (
                     Ip == other.Ip ||
                     Ip != null &&
                     Ip.Equals(other.Ip)
-                ) && 
+                ) &&
                 (
                     Info == other.Info ||
                     Info != null &&
                     Info.Equals(other.Info)
-                ) && 
-                (
-                    SubnetId == other.SubnetId ||
+                );// && 
+                //(
+                    //SubnetId == other.SubnetId ||
                     
-                    SubnetId.Equals(other.SubnetId)
-                );
+                    //SubnetId.Equals(other.SubnetId)
+                //);
         }
 
         /// <summary>
@@ -141,7 +135,7 @@ namespace NetFighter.Models
                     if (Info != null)
                     hashCode = hashCode * 59 + Info.GetHashCode();
                     
-                    hashCode = hashCode * 59 + SubnetId.GetHashCode();
+                    //hashCode = hashCode * 59 + SubnetId.GetHashCode();
                 return hashCode;
             }
         }

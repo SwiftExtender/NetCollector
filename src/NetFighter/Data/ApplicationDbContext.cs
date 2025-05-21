@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using NetFighter.Models;
 using System;
+using System.Reflection.Metadata;
 
 
 namespace NetFighter.Data
@@ -36,10 +37,19 @@ namespace NetFighter.Data
         {
             optionsBuilder.UseSqlite($"Data Source={DbPath}");
         }
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
-        //    // Add model configurations here if needed
-        //}
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Domains>()
+                .HasMany(e => e.DomainsHosts)
+                .WithOne(e => e.Domains)
+                .HasForeignKey(e => e.DomainId)
+                .HasPrincipalKey(e => e.Id);
+            modelBuilder.Entity<Hosts>()
+                .HasMany(e => e.DomainsHosts)
+                .WithOne(e => e.Hosts)
+                .HasForeignKey(e => e.HostId)
+                .HasPrincipalKey(e => e.Id);
+        }
     }
 }
