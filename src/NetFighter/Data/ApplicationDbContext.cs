@@ -3,7 +3,6 @@ using NetFighter.Models;
 using System;
 using System.Reflection.Metadata;
 
-
 namespace NetFighter.Data
 {
     public class ApplicationDbContext : DbContext
