@@ -67,7 +67,7 @@ namespace NetFighter.Controllers
         [Route("/scan_profiles_startup_profiles")]
         [ValidateModelState]
         [SwaggerOperation("ScanProfilesStartupProfilesGet")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<ScanProfilesStartupProfiles>), description: "OK")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<ScanProfilesToolProfiles>), description: "OK")]
         public virtual IActionResult ScanProfilesStartupProfilesGet([FromQuery (Name = "scan_profile_id")]string scanProfileId, [FromQuery (Name = "startup_profile_id")]string startupProfileId, [FromQuery (Name = "order")]string order, [FromQuery (Name = "select")]string select, [FromHeader (Name = "Range")]string range, [FromHeader (Name = "Range-Unit")]string rangeUnit, [FromQuery (Name = "offset")]string offset, [FromQuery (Name = "limit")]string limit, [FromHeader (Name = "Prefer")]string prefer)
         {
 
@@ -79,8 +79,8 @@ namespace NetFighter.Controllers
             exampleJson = "[ {\r\n  \"scan_profile_id\" : 0,\r\n  \"startup_profile_id\" : 6,\r\n  \"order\" : 1\r\n}, {\r\n  \"scan_profile_id\" : 0,\r\n  \"startup_profile_id\" : 6,\r\n  \"order\" : 1\r\n} ]";
             
             var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<ScanProfilesStartupProfiles>>(exampleJson)
-            : default(List<ScanProfilesStartupProfiles>);
+            ? JsonConvert.DeserializeObject<List<ScanProfilesToolProfiles>>(exampleJson)
+            : default(List<ScanProfilesToolProfiles>);
             //TODO: Change the data returned
             return new ObjectResult(example);
         }
@@ -99,7 +99,7 @@ namespace NetFighter.Controllers
         [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("ScanProfilesStartupProfilesPatch")]
-        public virtual IActionResult ScanProfilesStartupProfilesPatch([FromQuery (Name = "scan_profile_id")]string scanProfileId, [FromQuery (Name = "startup_profile_id")]string startupProfileId, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Prefer")]string prefer, [FromBody]ScanProfilesStartupProfiles scanProfilesStartupProfiles)
+        public virtual IActionResult ScanProfilesStartupProfilesPatch([FromQuery (Name = "scan_profile_id")]string scanProfileId, [FromQuery (Name = "startup_profile_id")]string startupProfileId, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Prefer")]string prefer, [FromBody] ScanProfilesToolProfiles scanProfilesStartupProfiles)
         {
 
             //TODO: Uncomment the next line to return response 204 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
@@ -120,7 +120,7 @@ namespace NetFighter.Controllers
         [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("ScanProfilesStartupProfilesPost")]
-        public virtual IActionResult ScanProfilesStartupProfilesPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]ScanProfilesStartupProfiles scanProfilesStartupProfiles)
+        public virtual IActionResult ScanProfilesStartupProfilesPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody] ScanProfilesToolProfiles scanProfilesStartupProfiles)
         {
 
             //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...

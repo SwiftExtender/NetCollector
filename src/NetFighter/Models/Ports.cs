@@ -61,7 +61,7 @@ namespace NetFighter.Models
         [Required]
         [DataMember(Name="protocol", EmitDefaultValue=false)]
         public string Protocol { get; set; }
-
+        public ICollection<VhostPorts> VhostPorts { get; }
         /// <summary>
         /// Returns the string presentation of the object
         /// </summary>

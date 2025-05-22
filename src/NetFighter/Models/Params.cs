@@ -51,9 +51,7 @@ namespace NetFighter.Models
         /// Note: This is a Foreign Key to &#x60;vhosts.id&#x60;.&lt;fk table&#x3D;&#39;vhosts&#39; column&#x3D;&#39;id&#39;/&gt;
         /// </summary>
         /// <value>Note: This is a Foreign Key to &#x60;vhosts.id&#x60;.&lt;fk table&#x3D;&#39;vhosts&#39; column&#x3D;&#39;id&#39;/&gt;</value>
-        [Required]
-        [DataMember(Name="vhost_id", EmitDefaultValue=true)]
-        public int VhostId { get; set; }
+        public ICollection<Hosts> Hosts { get; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -66,7 +64,7 @@ namespace NetFighter.Models
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  Value: ").Append(Value).Append("\n");
-            sb.Append("  VhostId: ").Append(VhostId).Append("\n");
+            //sb.Append("  VhostId: ").Append(VhostId).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -102,26 +100,21 @@ namespace NetFighter.Models
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
+            return
                 (
                     Id == other.Id ||
-                    
+
                     Id.Equals(other.Id)
-                ) && 
+                ) &&
                 (
                     Name == other.Name ||
                     Name != null &&
                     Name.Equals(other.Name)
-                ) && 
+                ) &&
                 (
                     Value == other.Value ||
                     Value != null &&
                     Value.Equals(other.Value)
-                ) && 
-                (
-                    VhostId == other.VhostId ||
-                    
-                    VhostId.Equals(other.VhostId)
                 );
         }
 
@@ -142,7 +135,7 @@ namespace NetFighter.Models
                     if (Value != null)
                     hashCode = hashCode * 59 + Value.GetHashCode();
                     
-                    hashCode = hashCode * 59 + VhostId.GetHashCode();
+                    //hashCode = hashCode * 59 + VhostId.GetHashCode();
                 return hashCode;
             }
         }

@@ -24,7 +24,7 @@ namespace NetFighter.Models
     /// 
     /// </summary>
     [DataContract]
-    public partial class ScanProfilesStartupProfiles : IEquatable<ScanProfilesStartupProfiles>
+    public partial class ScanProfilesToolProfiles : IEquatable<ScanProfilesToolProfiles>
     {
         [Required]
         [DataMember(Name = "id", EmitDefaultValue = true)]
@@ -78,7 +78,7 @@ namespace NetFighter.Models
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((ScanProfilesStartupProfiles)obj);
+            return obj.GetType() == GetType() && Equals((ScanProfilesToolProfiles)obj);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace NetFighter.Models
         /// </summary>
         /// <param name="other">Instance of ScanProfilesStartupProfiles to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(ScanProfilesStartupProfiles other)
+        public bool Equals(ScanProfilesToolProfiles other)
         {
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -132,12 +132,12 @@ namespace NetFighter.Models
         #region Operators
         #pragma warning disable 1591
 
-        public static bool operator ==(ScanProfilesStartupProfiles left, ScanProfilesStartupProfiles right)
+        public static bool operator ==(ScanProfilesToolProfiles left, ScanProfilesToolProfiles right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(ScanProfilesStartupProfiles left, ScanProfilesStartupProfiles right)
+        public static bool operator !=(ScanProfilesToolProfiles left, ScanProfilesToolProfiles right)
         {
             return !Equals(left, right);
         }

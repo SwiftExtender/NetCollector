@@ -47,6 +47,7 @@ namespace NetFighter.Models
         [DataMember(Name="info", EmitDefaultValue=false)]
         public string Info { get; set; }
         public ICollection<DomainsHosts> DomainsHosts { get; }
+        public ICollection<Ports> Ports { get; }
 
         /// <summary>
         /// Returns the string presentation of the object
