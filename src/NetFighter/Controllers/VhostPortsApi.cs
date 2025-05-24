@@ -57,7 +57,7 @@ namespace NetFighter.Controllers
         [Route("/vhost_ports")]
         [ValidateModelState]
         [SwaggerOperation("VhostPortsGet")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<VhostPorts>), description: "OK")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<VhostsPorts>), description: "OK")]
         public async Task<IActionResult> VhostPortsGet([FromQuery (Name = "vhost_id")]string vhostId, [FromQuery (Name = "port_id")]string portId, [FromQuery (Name = "select")]string select, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Range")]string range, [FromHeader (Name = "Range-Unit")]string rangeUnit, [FromQuery (Name = "offset")]string offset, [FromQuery (Name = "limit")]string limit, [FromHeader (Name = "Prefer")]string prefer)
         {
 
@@ -69,8 +69,8 @@ namespace NetFighter.Controllers
             exampleJson = "[ {\r\n  \"port_id\" : 6,\r\n  \"vhost_id\" : 0\r\n}, {\r\n  \"port_id\" : 6,\r\n  \"vhost_id\" : 0\r\n} ]";
             
             var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<VhostPorts>>(exampleJson)
-            : default(List<VhostPorts>);
+            ? JsonConvert.DeserializeObject<List<VhostsPorts>>(exampleJson)
+            : default(List<VhostsPorts>);
             //TODO: Change the data returned
             return new ObjectResult(example);
         }
@@ -88,7 +88,7 @@ namespace NetFighter.Controllers
         [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("VhostPortsPatch")]
-        public async Task<IActionResult> VhostPortsPatch([FromQuery (Name = "vhost_id")]string vhostId, [FromQuery (Name = "port_id")]string portId, [FromHeader (Name = "Prefer")]string prefer, [FromBody]VhostPorts vhostPorts)
+        public async Task<IActionResult> VhostPortsPatch([FromQuery (Name = "vhost_id")]string vhostId, [FromQuery (Name = "port_id")]string portId, [FromHeader (Name = "Prefer")]string prefer, [FromBody]VhostsPorts vhostPorts)
         {
 
             //TODO: Uncomment the next line to return response 204 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
@@ -109,7 +109,7 @@ namespace NetFighter.Controllers
         [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("VhostPortsPost")]
-        public async Task<IActionResult> VhostPortsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]VhostPorts vhostPorts)
+        public async Task<IActionResult> VhostPortsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]VhostsPorts vhostPorts)
         {
 
             //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...

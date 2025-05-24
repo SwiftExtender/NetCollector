@@ -10,13 +10,14 @@ namespace NetFighter.Data
         private string DbPath { get; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-            
+            var _ = Model;
+            Database.EnsureCreated();
         }
-        public ApplicationDbContext()
-        {
-            var path = AppDomain.CurrentDomain.BaseDirectory;
-            DbPath = System.IO.Path.Join(path, "data.db");
-        }
+        //public ApplicationDbContext()
+        //{
+        //    var path = AppDomain.CurrentDomain.BaseDirectory;
+        //    DbPath = System.IO.Path.Join(path, "data.db");
+        //}
         public DbSet<Domains> Domains { get; set; }
         public DbSet<DomainsHosts> DomainsHosts { get; set; }
         public DbSet<Hosts> Hosts { get; set; }
@@ -30,13 +31,13 @@ namespace NetFighter.Data
         public DbSet<Subnets> Subnets { get; set; }
         public DbSet<Tools> Tools { get; set; }
         public DbSet<Urls> Urls { get; set; }
-        public DbSet<VhostPorts> VhostPorts { get; set; }
+        public DbSet<VhostsPorts> VhostsPorts { get; set; }
         public DbSet<Vhosts> Vhosts { get; set; }
         public DbSet<Notes> Notes { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite($"Data Source={DbPath}");
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlite($"Data Source={DbPath}");
+        //}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

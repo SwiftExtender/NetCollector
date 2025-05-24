@@ -26,6 +26,8 @@ using NetFighter.OpenApi;
 using NetFighter.Formatters;
 using Microsoft.AspNetCore.Http;
 using NetFighter.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace NetFighter
 {
@@ -55,11 +57,19 @@ namespace NetFighter
         public void ConfigureServices(IServiceCollection services)
         {
 
-            var tempdb = new ApplicationDbContext();
-            tempdb.Database.EnsureCreated();
+            //var tempdb = new ApplicationDbContext();
+            //tempdb.Database.EnsureCreated();
             // Add framework services.
+            //var _options = new DbContextOptionsBuilder()
+            //.UseSqlite("data.db")
+            //.Options;
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                // Match the connection string from your manual instance
+                options.UseSqlite($"Data Source=data.db").LogTo(Console.WriteLine, LogLevel.Information); ;
+            });
+            //services.AddDbContext<ApplicationDbContext>();
             services
-                // Don't need the full MVC stack for an API, see https://andrewlock.net/comparing-startup-between-the-asp-net-core-3-templates/
                 .AddControllers(options => {
                     options.InputFormatters.Insert(0, new InputFormatterStream());
                 })
@@ -120,8 +130,12 @@ namespace NetFighter
             {
                 app.UseHsts();
             }
-
-            app.UseHttpsRedirection();
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                dbContext.Database.EnsureCreated(); // Creates tables if they don't exist
+            }
+            //app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseSwagger(c =>

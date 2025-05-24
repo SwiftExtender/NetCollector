@@ -26,6 +26,7 @@ namespace NetFighter.Models
     [DataContract]
     public partial class DomainsHosts : IEquatable<DomainsHosts>
     {
+        [Key]
         [Required]
         [DataMember(Name = "id", EmitDefaultValue = true)]
         public int Id { get; set; }

@@ -20,6 +20,7 @@ namespace NetFighter.Models
         /// Note: This is a Primary Key.&lt;pk/&gt;
         /// </summary>
         /// <value>Note: This is a Primary Key.&lt;pk/&gt;</value>
+        [Key]
         [Required]
         [DataMember(Name="id", EmitDefaultValue=true)]
         public int Id { get; set; }
@@ -38,7 +39,7 @@ namespace NetFighter.Models
         public string Info { get; set; }
 
         public ICollection<Params> Params { get; }
-        public ICollection<VhostPorts> VhostPorts { get; }
+        public ICollection<VhostsPorts> VhostPorts { get; }
         public ICollection<Urls> Urls { get; }
         /// <summary>
         /// Returns the string presentation of the object

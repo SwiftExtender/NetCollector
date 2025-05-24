@@ -26,6 +26,7 @@ namespace NetFighter.Models
     [DataContract]
     public partial class ScanProfilesToolProfiles : IEquatable<ScanProfilesToolProfiles>
     {
+        [Key]
         [Required]
         [DataMember(Name = "id", EmitDefaultValue = true)]
         public int Id { get; set; }

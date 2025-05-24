@@ -39,18 +39,19 @@ namespace NetFighter.Controllers
         [Route("/hosts")]
         [ValidateModelState]
         [SwaggerOperation("HostsDelete")]
-        public async Task<IActionResult> HostsDelete([FromQuery (Name = "id")]string id, [FromQuery (Name = "ip")]string ip, [FromQuery (Name = "info")]string info, [FromQuery (Name = "subnet_id")]string subnetId, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> HostsDelete([FromQuery (Name = "id")]string id)
         {
             try
             {
-                var deletedHost = _context.Hosts.Remove(id);
+                Hosts deletedHost = new Hosts() { Id = Int32.Parse(id) };
+                //_context.Hosts.Attach(deletedHost);
+                _context.Hosts.Remove(deletedHost);
                 await _context.SaveChangesAsync();
                 return StatusCode(204);
             }
             catch (Exception ex) {
                 return StatusCode(500);
             }
-            
         }
 
         /// <summary>
@@ -115,7 +116,6 @@ namespace NetFighter.Controllers
         /// 
         /// </summary>
         /// <param name="select">Filtering Columns</param>
-        /// <param name="prefer">Preference</param>
         /// <param name="hosts">hosts</param>
         /// <response code="201">Created</response>
         [HttpPost]
@@ -123,13 +123,20 @@ namespace NetFighter.Controllers
         [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("HostsPost")]
-        public async Task<IActionResult> HostsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Hosts hosts)
+        public async Task<IActionResult> HostsPost([FromQuery(Name = "ip")] string ip, [FromQuery(Name = "info")] string info)
         {
-
-            //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(201);
-
-            throw new NotImplementedException();
+            
+            try
+            {
+                _context.Hosts.Add(new Hosts() { Ip = ip, Info = info });
+                await _context.SaveChangesAsync();
+                return StatusCode(201);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500);
+            }
         }
     }
 }

@@ -30,6 +30,7 @@ namespace NetFighter.Models
         /// Note: This is a Primary Key.&lt;pk/&gt;
         /// </summary>
         /// <value>Note: This is a Primary Key.&lt;pk/&gt;</value>
+        [Key]
         [Required]
         [DataMember(Name="id", EmitDefaultValue=true)]
         public int Id { get; set; }
@@ -46,12 +47,6 @@ namespace NetFighter.Models
         /// </summary>
         [DataMember(Name="value", EmitDefaultValue=false)]
         public string Value { get; set; }
-
-        /// <summary>
-        /// Note: This is a Foreign Key to &#x60;vhosts.id&#x60;.&lt;fk table&#x3D;&#39;vhosts&#39; column&#x3D;&#39;id&#39;/&gt;
-        /// </summary>
-        /// <value>Note: This is a Foreign Key to &#x60;vhosts.id&#x60;.&lt;fk table&#x3D;&#39;vhosts&#39; column&#x3D;&#39;id&#39;/&gt;</value>
-        public ICollection<Hosts> Hosts { get; }
 
         /// <summary>
         /// Returns the string presentation of the object

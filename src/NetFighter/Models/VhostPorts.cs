@@ -14,8 +14,9 @@ namespace NetFighter.Models
     /// 
     /// </summary>
     [DataContract]
-    public partial class VhostPorts : IEquatable<VhostPorts>
+    public partial class VhostsPorts : IEquatable<VhostsPorts>
     {
+        [Key]
         [Required]
         [DataMember(Name = "id", EmitDefaultValue = true)]
         public int Id { get; set; }
@@ -62,7 +63,7 @@ namespace NetFighter.Models
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((VhostPorts)obj);
+            return obj.GetType() == GetType() && Equals((VhostsPorts)obj);
         }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace NetFighter.Models
         /// </summary>
         /// <param name="other">Instance of VhostPorts to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(VhostPorts other)
+        public bool Equals(VhostsPorts other)
         {
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -109,12 +110,12 @@ namespace NetFighter.Models
         #region Operators
         #pragma warning disable 1591
 
-        public static bool operator ==(VhostPorts left, VhostPorts right)
+        public static bool operator ==(VhostsPorts left, VhostsPorts right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(VhostPorts left, VhostPorts right)
+        public static bool operator !=(VhostsPorts left, VhostsPorts right)
         {
             return !Equals(left, right);
         }

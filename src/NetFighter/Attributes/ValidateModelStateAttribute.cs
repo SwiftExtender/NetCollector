@@ -28,7 +28,6 @@ namespace NetFighter.Attributes
         /// <param name="context"></param>
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            // Per https://blog.markvincze.com/how-to-validate-action-parameters-with-dataannotation-attributes/
             if (context.ActionDescriptor is ControllerActionDescriptor descriptor)
             {
                 foreach (var parameter in descriptor.MethodInfo.GetParameters())
