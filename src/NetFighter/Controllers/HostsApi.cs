@@ -11,6 +11,7 @@ using NetFighter.Attributes;
 using NetFighter.Models;
 using NetFighter.Data;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace NetFighter.Controllers
 { 
@@ -44,13 +45,14 @@ namespace NetFighter.Controllers
             try
             {
                 Hosts deletedHost = new Hosts() { Id = Int32.Parse(id) };
-                //_context.Hosts.Attach(deletedHost);
                 _context.Hosts.Remove(deletedHost);
                 await _context.SaveChangesAsync();
                 return StatusCode(204);
             }
-            catch (Exception ex) {
-                return StatusCode(500);
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
             }
         }
 
@@ -75,19 +77,19 @@ namespace NetFighter.Controllers
         [ValidateModelState]
         [SwaggerOperation("HostsGet")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<Hosts>), description: "OK")]
-        public async Task<IActionResult> HostsGet([FromQuery (Name = "id")]string id, [FromQuery (Name = "ip")]string ip, [FromQuery (Name = "info")]string info, [FromQuery (Name = "subnet_id")]string subnetId, [FromQuery (Name = "select")]string select, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Range")]string range, [FromHeader (Name = "Range-Unit")]string rangeUnit, [FromQuery (Name = "offset")]string offset, [FromQuery (Name = "limit")]string limit, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> HostsGet()
         {
-
-            string exampleJson = null;
-            exampleJson = "[ {\r\n  \"ip\" : \"ip\",\r\n  \"subnet_id\" : 6,\r\n  \"id\" : 0,\r\n  \"info\" : \"info\"\r\n}, {\r\n  \"ip\" : \"ip\",\r\n  \"subnet_id\" : 6,\r\n  \"id\" : 0,\r\n  \"info\" : \"info\"\r\n} ]";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<Hosts>>(exampleJson)
-            : default(List<Hosts>);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            try
+            {
+                return StatusCode(200, new { Message = _context.Hosts.ToList() });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
-
+        //[FromQuery (Name = "id")]string id, [FromQuery (Name = "ip")]string ip, [FromQuery (Name = "info")]string info, [FromQuery (Name = "subnet_id")]string subnetId, [FromQuery (Name = "select")]string select, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Range")]string range, [FromHeader (Name = "Range-Unit")]string rangeUnit, [FromQuery (Name = "offset")]string offset, [FromQuery (Name = "limit")]string limit
         /// <summary>
         /// 
         /// </summary>
@@ -103,13 +105,19 @@ namespace NetFighter.Controllers
         [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("HostsPatch")]
-        public async Task<IActionResult> HostsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "ip")]string ip, [FromQuery (Name = "info")]string info, [FromQuery (Name = "subnet_id")]string subnetId, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Hosts hosts)
+        public async Task<IActionResult> HostsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "ip")]string ip, [FromQuery (Name = "info")]string info, [FromQuery (Name = "subnet_id")]string subnetId)
         {
-
-            //TODO: Uncomment the next line to return response 204 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(204);
-
-            throw new NotImplementedException();
+            try
+            {
+                _context.Hosts.Update(new Hosts() { Id = Int32.Parse(id), Ip = ip, Info = info });
+                await _context.SaveChangesAsync();
+                return StatusCode(201);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
 
         /// <summary>
@@ -125,7 +133,6 @@ namespace NetFighter.Controllers
         [SwaggerOperation("HostsPost")]
         public async Task<IActionResult> HostsPost([FromQuery(Name = "ip")] string ip, [FromQuery(Name = "info")] string info)
         {
-            
             try
             {
                 _context.Hosts.Add(new Hosts() { Ip = ip, Info = info });
@@ -135,7 +142,7 @@ namespace NetFighter.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(500);
+                return StatusCode(500, new { ex.Message });
             }
         }
     }
