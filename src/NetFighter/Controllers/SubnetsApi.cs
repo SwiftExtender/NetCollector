@@ -17,6 +17,7 @@ namespace NetFighter.Controllers
     /// 
     /// </summary>
     [ApiController]
+    [Authorize]
     public class SubnetsApiController : ControllerBase
     { 
         /// <summary>

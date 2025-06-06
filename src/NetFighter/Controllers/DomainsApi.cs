@@ -10,6 +10,8 @@ using Newtonsoft.Json;
 using NetFighter.Attributes;
 using NetFighter.Models;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using NetFighter.Data;
 
 namespace NetFighter.Controllers
 { 
@@ -17,8 +19,15 @@ namespace NetFighter.Controllers
     /// 
     /// </summary>
     [ApiController]
+    [Authorize]
     public class DomainsApiController : ControllerBase
-    { 
+    {
+        private readonly ApplicationDbContext _context;
+
+        public DomainsApiController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -61,19 +70,9 @@ namespace NetFighter.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(List<Domains>), description: "OK")]
         public async Task<IActionResult> DomainsGet([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "info")]string info, [FromQuery (Name = "select")]string select, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Range")]string range, [FromHeader (Name = "Range-Unit")]string rangeUnit, [FromQuery (Name = "offset")]string offset, [FromQuery (Name = "limit")]string limit, [FromHeader (Name = "Prefer")]string prefer)
         {
+            var allHosts = await _context.Domains.ToListAsync();
+            return Ok(allHosts);
 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(List<Domains>));
-            //TODO: Uncomment the next line to return response 206 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(206);
-            string exampleJson = null;
-            exampleJson = "[ {\r\n  \"name\" : \"name\",\r\n  \"id\" : 0,\r\n  \"info\" : \"info\"\r\n}, {\r\n  \"name\" : \"name\",\r\n  \"id\" : 0,\r\n  \"info\" : \"info\"\r\n} ]";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<Domains>>(exampleJson)
-            : default(List<Domains>);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
         }
 
         /// <summary>

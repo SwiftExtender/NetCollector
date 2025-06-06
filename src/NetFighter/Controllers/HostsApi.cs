@@ -21,6 +21,7 @@ namespace NetFighter.Controllers
     /// 
     /// </summary>
     [ApiController]
+    [Authorize]
     public class HostsApiController : ControllerBase
     { 
         private readonly ApplicationDbContext _context;
@@ -124,7 +125,7 @@ namespace NetFighter.Controllers
         /// <response code="204">No Content</response>
         [HttpPatch]
         [Route("/hosts")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("HostsPatch")]
         public async Task<IActionResult> HostsPatch([FromBody] UpdatedHost host)
@@ -151,7 +152,7 @@ namespace NetFighter.Controllers
         /// <response code="201">Created</response>
         [HttpPost]
         [Route("/hosts")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("HostsPost")]
         public async Task<IActionResult> HostsPost([FromBody] CreatedHost host)

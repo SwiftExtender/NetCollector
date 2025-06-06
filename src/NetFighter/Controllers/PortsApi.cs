@@ -21,6 +21,7 @@ namespace NetFighter.Controllers
     /// 
     /// </summary>
     [ApiController]
+    [Authorize]
     public class PortsApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

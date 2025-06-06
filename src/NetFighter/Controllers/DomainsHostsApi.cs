@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using NetFighter.Attributes;
 using NetFighter.Models;
 using System.Threading.Tasks;
+using NetFighter.Data;
 
 namespace NetFighter.Controllers
 { 
@@ -17,8 +18,15 @@ namespace NetFighter.Controllers
     /// 
     /// </summary>
     [ApiController]
+    [Authorize]
     public class DomainsHostsApiController : ControllerBase
-    { 
+    {
+        private readonly ApplicationDbContext _context;
+
+        public DomainsHostsApiController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         /// <summary>
         /// 
         /// </summary>

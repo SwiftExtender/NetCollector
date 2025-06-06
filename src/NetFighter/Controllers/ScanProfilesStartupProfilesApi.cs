@@ -10,6 +10,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Newtonsoft.Json;
 using NetFighter.Attributes;
 using NetFighter.Models;
+using NetFighter.Data;
 
 namespace NetFighter.Controllers
 { 
@@ -17,8 +18,15 @@ namespace NetFighter.Controllers
     /// 
     /// </summary>
     [ApiController]
+    [Authorize]
     public class ScanProfilesStartupProfilesApiController : ControllerBase
-    { 
+    {
+        private readonly ApplicationDbContext _context;
+
+        public ScanProfilesStartupProfilesApiController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         /// <summary>
         /// 
         /// </summary>

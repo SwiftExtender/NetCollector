@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+    var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="container">
+        @RenderBody()
+    </div>
+    <script src="~/js/site.js"></script>
+</body>
+</html>
