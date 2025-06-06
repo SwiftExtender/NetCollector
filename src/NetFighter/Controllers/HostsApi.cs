@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using NetFighter.Attributes;
 using NetFighter.Models;
 using NetFighter.Data;
+using NetFighter.RequestModels;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -41,7 +42,7 @@ namespace NetFighter.Controllers
         [Route("/hosts")]
         [ValidateModelState]
         [SwaggerOperation("HostsDelete")]
-        public async Task<IActionResult> HostsDelete([FromQuery (Name = "id")]string id)
+        public async Task<IActionResult> HostsDelete([FromBody] string id)
         {
             try
             {
@@ -77,7 +78,7 @@ namespace NetFighter.Controllers
         [Route("/hosts")]
         [ValidateModelState]
         [SwaggerOperation("HostsGet")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<Hosts>), description: "OK")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Hosts>), description: "Get all hosts")]
         public async Task<IActionResult> HostsGet()
         {
             try
@@ -91,7 +92,26 @@ namespace NetFighter.Controllers
                 return StatusCode(500, new { ex.Message });
             }
         }
-        //[FromQuery (Name = "id")]string id, [FromQuery (Name = "ip")]string ip, [FromQuery (Name = "info")]string info, [FromQuery (Name = "subnet_id")]string subnetId, [FromQuery (Name = "select")]string select, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Range")]string range, [FromHeader (Name = "Range-Unit")]string rangeUnit, [FromQuery (Name = "offset")]string offset, [FromQuery (Name = "limit")]string limit
+
+
+        [HttpGet]
+        [Route("/hosts/{id}")]
+        [ValidateModelState]
+        [SwaggerOperation("GetPort")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Hosts>), description: "Get host by id")]
+        public async Task<IActionResult> GetPort(int id)
+        {
+            try
+            {
+                Hosts selectedHost = await _context.Hosts.SingleAsync(p => p.Id == id);
+                return Ok(selectedHost);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -107,11 +127,12 @@ namespace NetFighter.Controllers
         [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("HostsPatch")]
-        public async Task<IActionResult> HostsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "ip")]string ip, [FromQuery (Name = "info")]string info, [FromQuery (Name = "subnet_id")]string subnetId)
+        public async Task<IActionResult> HostsPatch([FromBody] UpdatedHost host)
         {
             try
             {
-                _context.Hosts.Update(new Hosts() { Id = Int32.Parse(id), Ip = ip, Info = info });
+                Hosts updatedHost = new Hosts() { Id = host.Id };
+                _context.Hosts.Update(new Hosts() { Id = host.Id, Ip = host.Ip, Info = host.Info });
                 await _context.SaveChangesAsync();
                 return StatusCode(201);
             }
@@ -133,11 +154,11 @@ namespace NetFighter.Controllers
         [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("HostsPost")]
-        public async Task<IActionResult> HostsPost([FromQuery(Name = "ip")] string ip, [FromQuery(Name = "info")] string info)
+        public async Task<IActionResult> HostsPost([FromBody] CreatedHost host)
         {
             try
             {
-                _context.Hosts.Add(new Hosts() { Ip = ip, Info = info });
+                _context.Hosts.Add(new Hosts() { Ip = host.Ip, Info = host.Info });
                 await _context.SaveChangesAsync();
                 return StatusCode(201);
             }

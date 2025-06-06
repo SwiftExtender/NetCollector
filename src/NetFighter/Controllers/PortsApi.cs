@@ -13,6 +13,7 @@ using NetFighter.Models;
 using Microsoft.EntityFrameworkCore;
 using NetFighter.Data;
 using System.Linq;
+using NetFighter.RequestModels;
 
 namespace NetFighter.Controllers
 { 
@@ -38,11 +39,11 @@ namespace NetFighter.Controllers
         [Route("/ports")]
         [ValidateModelState]
         [SwaggerOperation("PortsDelete")]
-        public async Task<IActionResult> PortsDelete([FromQuery (Name = "id")]string id)
+        public async Task<IActionResult> PortsDelete([FromBody] int id)
         {
             try
             {
-                Ports deletedPort = new Ports() { Id = Int32.Parse(id) };
+                Ports deletedPort = new Ports() { Id = id };
                 _context.Ports.Remove(deletedPort);
                 await _context.SaveChangesAsync();
                 return StatusCode(204);
@@ -130,11 +131,11 @@ namespace NetFighter.Controllers
         [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("PatchPorts")]
-        public async Task<IActionResult> PortsPatch([FromQuery (Name = "id")]int id, [FromQuery (Name = "number")]int number, [FromQuery (Name = "info")]string info, [FromQuery (Name = "protocol")]string protocol)
+        public async Task<IActionResult> PortsPatch([FromBody] UpdatedPort port)
         {
             try
             {
-                Ports changedPort = new Ports() { Id = id, Number = number, Protocol = protocol, Info = info};
+                Ports changedPort = new Ports() { Id = port.Id, HostId = port.HostId, Number = port.Number, Protocol = port.Protocol, Info = port.Info};
                 _context.Ports.Update(changedPort);
                 await _context.SaveChangesAsync();
                 return StatusCode(200);
@@ -155,11 +156,11 @@ namespace NetFighter.Controllers
         [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("AddPorts")]
-        public async Task<IActionResult> PortsPost([FromQuery(Name = "number")] int number, [FromQuery(Name = "host_id")] int hostId, [FromQuery(Name = "info")] string info, [FromQuery(Name = "protocol")] string protocol)
+        public async Task<IActionResult> PortsPost([FromBody] CreatedPort port)
         {
             try
             {
-                Ports createdPort = new Ports() { HostId = hostId, Number = number, Info = info, Protocol = protocol };
+                Ports createdPort = new Ports() { HostId = port.HostId, Number = port.Number, Info = port.Info, Protocol = port.Protocol };
                 _context.Ports.Add(createdPort);
                 await _context.SaveChangesAsync();
                 return StatusCode(201);
@@ -167,7 +168,7 @@ namespace NetFighter.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(500, new { ex.Message });
+                return StatusCode(500, new { ex.InnerException });
             }
         }
     }
