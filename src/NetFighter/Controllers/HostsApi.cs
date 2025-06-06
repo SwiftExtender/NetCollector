@@ -12,6 +12,7 @@ using NetFighter.Models;
 using NetFighter.Data;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace NetFighter.Controllers
 { 
@@ -81,7 +82,8 @@ namespace NetFighter.Controllers
         {
             try
             {
-                return StatusCode(200, new { Message = _context.Hosts.ToList() });
+                var allHosts = await _context.Hosts.ToListAsync();
+                return Ok(allHosts);
             }
             catch (Exception ex)
             {

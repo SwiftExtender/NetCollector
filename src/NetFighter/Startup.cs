@@ -57,12 +57,6 @@ namespace NetFighter
         public void ConfigureServices(IServiceCollection services)
         {
 
-            //var tempdb = new ApplicationDbContext();
-            //tempdb.Database.EnsureCreated();
-            // Add framework services.
-            //var _options = new DbContextOptionsBuilder()
-            //.UseSqlite("data.db")
-            //.Options;
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 // Match the connection string from your manual instance

@@ -40,7 +40,8 @@ namespace NetFighter.Data
         //}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Hosts>().HasIndex(e => e.Ip).IsUnique();
+            modelBuilder.Entity<Ports>().HasIndex(e => new { e.Number, e.HostId }).IsUnique();
             modelBuilder.Entity<Domains>()
                 .HasMany(e => e.DomainsHosts)
                 .WithOne(e => e.Domains)
@@ -61,6 +62,8 @@ namespace NetFighter.Data
                 .WithOne(e => e.Ports)
                 .HasForeignKey(e => e.PortId)
                 .HasPrincipalKey(e => e.Id);
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
