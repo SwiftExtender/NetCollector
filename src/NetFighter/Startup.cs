@@ -20,6 +20,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using NetFighter.Models;
 using NetFighter.Services;
+using Serilog;
+using Microsoft.AspNetCore.Diagnostics;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace NetFighter
 {
@@ -48,7 +52,17 @@ namespace NetFighter
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Error() // Log only errors and higher
+                .WriteTo.File(
+                    path: "netf-errors.log", // File path
+                    rollingInterval: RollingInterval.Infinite, // Disable log rotation
+                    fileSizeLimitBytes: 10_000_000, // ~10 MB max size
+                    retainedFileCountLimit: 1, // Keep only 1 file
+                    rollOnFileSizeLimit: true, // Roll when size exceeded (but we retain only 1)
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}{NewLine}"
+                )
+                .CreateLogger();
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 // Match the connection string from your manual instance
@@ -75,7 +89,7 @@ namespace NetFighter
                 {
                     options.Cookie.Name = "Auth";
                     options.LoginPath = "/Login";
-                    options.AccessDeniedPath = "/Login";
+                    options.AccessDeniedPath = "/Error";
                     options.Cookie.HttpOnly = true;
                     options.SlidingExpiration = true;
                     options.ExpireTimeSpan = TimeSpan.FromDays(7);
@@ -117,6 +131,26 @@ namespace NetFighter
                     .AddSwaggerGenNewtonsoftSupport();
         }
 
+        //static Task CreateInitialUserAsync(UserManager<IdentityUser> userManager,
+        //    IConfiguration config)
+        //{
+        //    // Get user credentials from configuration
+        //    var email = config["InitialUser:Email"]!;
+        //    var password = config["InitialUser:Password"]!;
+
+        //    // Check if user exists
+        //    if (userManager.FindByEmailAsync(email) is null)
+        //    {
+        //        var user = new IdentityUser { UserName = email, Email = email };
+        //        var result = userManager.Create(user, password);
+
+        //        if (!result.Succeeded)
+        //            throw new Exception($"User creation failed: {string.Join(", ", result.Errors)}");
+
+        //        // Optional: Add roles or claims here
+        //    }
+        //}
+
         /// <summary>
         /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// </summary>
@@ -135,8 +169,22 @@ namespace NetFighter
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                dbContext.Database.EnsureCreated(); // Creates tables if they don't exist
+                dbContext.Database.EnsureCreated();
+                var hasher = new PasswordHasher<Users>();
+                var init = new AuthService(dbContext, hasher);
+                dbContext.Users.Add(init.ConstructUser("user", "test"));
+                dbContext.SaveChanges();
             }
+            app.UseExceptionHandler(exceptionHandlerApp =>
+            {
+                exceptionHandlerApp.Run(async context =>
+                {
+                    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+                    var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+                    logger.LogError(exception, "Unhandled exception");
+                    await Results.Problem().ExecuteAsync(context);
+                });
+            });
             //app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();

@@ -1,15 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using NetFighter.Models;
 using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Newtonsoft.Json;
 using NetFighter.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,6 +37,13 @@ namespace NetFighter.Services
                 );
 
                 return result == PasswordVerificationResult.Success ? user : null;
+            }
+
+            public Users ConstructUser(string username, string password)
+            {
+                Users user = new Users() { UserName = username };
+                user.PasswordHash = _passwordHasher.HashPassword(user, password);
+                return user;
             }
     }
 }

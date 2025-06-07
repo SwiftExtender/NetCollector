@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Serilog;
+using System;
 using System.IO;
 using System.Reflection;
 
@@ -27,11 +29,7 @@ namespace NetFighter
         /// <returns>IHostBuilder</returns>
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            var exePath = Assembly.GetExecutingAssembly().Location;
-            var exeDir = Path.GetDirectoryName(exePath);
-
             return Host.CreateDefaultBuilder(args)
-                .UseContentRoot(exeDir)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
