@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -10,7 +8,6 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using NetFighter.Filters;
-using NetFighter.OpenApi;
 using NetFighter.Formatters;
 using Microsoft.AspNetCore.Http;
 using NetFighter.Data;
@@ -86,32 +83,26 @@ namespace NetFighter
             .AddCookie(options =>
                 {
                     options.Cookie.Name = "Auth";
-                    options.Cookie.Domain = "localhost";
+                    //options.Cookie.Domain = "localhost";
                     options.LoginPath = "/Login";
                     options.AccessDeniedPath = "/Error";
                     options.Cookie.HttpOnly = true;
                     options.SlidingExpiration = true;
                     options.ExpireTimeSpan = TimeSpan.FromDays(7);
-                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.Cookie.SameSite = SameSiteMode.Strict;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-                    options.Cookie.SameSite = SameSiteMode.Lax;
                     //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 });
 
             services
                 .AddSwaggerGen(c =>
                 {
-                    c.EnableAnnotations(enableAnnotationsForInheritance: true, enableAnnotationsForPolymorphism: true);
-                    
-                    c.SwaggerDoc("13.0.0", new OpenApiInfo
+                    c.SwaggerDoc("1.0.0", new OpenApiInfo
                     {
-                        Title = "standard public schema",
-                        Description = "standard public schema (ASP.NET Core 8.0)",
-                        TermsOfService = new Uri("https://github.com/openapitools/openapi-generator"),
+                        Title = "NetFighter API",
                         Version = "1.0.0",
                     });
-                    c.CustomSchemaIds(type => type.FriendlyId(true));
-                    c.IncludeXmlComments($"{AppContext.BaseDirectory}{Path.DirectorySeparatorChar}{Assembly.GetExecutingAssembly().GetName().Name}.xml");
+                    //c.CustomSchemaIds(type => type.FriendlyId(true));
 
                     // Include DataAnnotation attributes on Controller Action parameters as OpenAPI validation rules (e.g required, pattern, ..)
                     // Use [ValidateModelState] on Actions to actually validate it in C# as well!
@@ -185,7 +176,7 @@ namespace NetFighter
                 .UseSwaggerUI(c =>
                 {
                     c.RoutePrefix = "openapi";
-                    c.SwaggerEndpoint("/openapi/13.0.0/openapi.json", "standard public schema");
+                    c.SwaggerEndpoint("/openapi/1.0.0/openapi.json", "Netfighter API");
                 });
             app.UseRouting();
 

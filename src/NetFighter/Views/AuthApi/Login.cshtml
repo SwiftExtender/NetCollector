@@ -4,7 +4,6 @@
 @{
     ViewData["Title"] = "Login";
     Layout = null;
-    var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -13,8 +12,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NetFighter Login</title>
     
-    <script src="@baseUrl/lib/axios.min.js"></script>
-    <script src="@baseUrl/lib/vue.global.js"></script>
+    <script src="/lib/axios.min.js"></script>
+    <script src="/lib/vue.global.js"></script>
     <style>
         * {
             margin: 0;
