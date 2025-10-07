@@ -93,7 +93,7 @@ namespace NetFighter.Controllers
         /// <response code="204">No Content</response>
         [HttpPatch]
         [Route("/vhost_ports")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("VhostPortsPatch")]
         public async Task<IActionResult> VhostPortsPatch([FromQuery (Name = "vhost_id")]string vhostId, [FromQuery (Name = "port_id")]string portId, [FromHeader (Name = "Prefer")]string prefer, [FromBody]VhostsPorts vhostPorts)
@@ -114,7 +114,7 @@ namespace NetFighter.Controllers
         /// <response code="201">Created</response>
         [HttpPost]
         [Route("/vhost_ports")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("VhostPortsPost")]
         public async Task<IActionResult> VhostPortsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]VhostsPorts vhostPorts)

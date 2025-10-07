@@ -99,7 +99,7 @@ namespace NetFighter.Controllers
         /// <response code="204">No Content</response>
         [HttpPatch]
         [Route("/params")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("ParamsPatch")]
         public async Task<IActionResult> ParamsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "value")]string value, [FromQuery (Name = "vhost_id")]string vhostId, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Params varParams)
@@ -120,7 +120,7 @@ namespace NetFighter.Controllers
         /// <response code="201">Created</response>
         [HttpPost]
         [Route("/params")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("ParamsPost")]
         public async Task<IActionResult> ParamsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Params varParams)

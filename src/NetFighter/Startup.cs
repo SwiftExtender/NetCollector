@@ -22,8 +22,6 @@ using NetFighter.Models;
 using NetFighter.Services;
 using Serilog;
 using Microsoft.AspNetCore.Diagnostics;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 
 namespace NetFighter
 {
@@ -88,12 +86,15 @@ namespace NetFighter
             .AddCookie(options =>
                 {
                     options.Cookie.Name = "Auth";
+                    options.Cookie.Domain = "localhost";
                     options.LoginPath = "/Login";
                     options.AccessDeniedPath = "/Error";
                     options.Cookie.HttpOnly = true;
                     options.SlidingExpiration = true;
                     options.ExpireTimeSpan = TimeSpan.FromDays(7);
-                    options.Cookie.SameSite = SameSiteMode.Strict;
+                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                    options.Cookie.SameSite = SameSiteMode.Lax;
                     //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 });
 
@@ -107,18 +108,7 @@ namespace NetFighter
                         Title = "standard public schema",
                         Description = "standard public schema (ASP.NET Core 8.0)",
                         TermsOfService = new Uri("https://github.com/openapitools/openapi-generator"),
-                        Contact = new OpenApiContact
-                        {
-                            Name = "OpenAPI-Generator Contributors",
-                            Url = new Uri("https://github.com/openapitools/openapi-generator"),
-                            Email = ""
-                        },
-                        License = new OpenApiLicense
-                        {
-                            Name = "NoLicense",
-                            Url = new Uri("http://localhost")
-                        },
-                        Version = "13.0.0",
+                        Version = "1.0.0",
                     });
                     c.CustomSchemaIds(type => type.FriendlyId(true));
                     c.IncludeXmlComments($"{AppContext.BaseDirectory}{Path.DirectorySeparatorChar}{Assembly.GetExecutingAssembly().GetName().Name}.xml");
@@ -194,13 +184,8 @@ namespace NetFighter
                 })
                 .UseSwaggerUI(c =>
                 {
-                    // set route prefix to openapi, e.g. http://localhost:8080/openapi/index.html
                     c.RoutePrefix = "openapi";
-                    //TODO: Either use the SwaggerGen generated OpenAPI contract (generated from C# classes)
                     c.SwaggerEndpoint("/openapi/13.0.0/openapi.json", "standard public schema");
-
-                    //TODO: Or alternatively use the original OpenAPI contract that's included in the static files
-                    // c.SwaggerEndpoint("/openapi-original.json", "standard public schema Original");
                 });
             app.UseRouting();
 

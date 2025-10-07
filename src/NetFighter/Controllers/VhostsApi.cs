@@ -96,7 +96,7 @@ namespace NetFighter.Controllers
         /// <response code="204">No Content</response>
         [HttpPatch]
         [Route("/vhosts")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("VhostsPatch")]
         public async Task<IActionResult> VhostsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "info")]string info, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Vhosts vhosts)
@@ -117,7 +117,7 @@ namespace NetFighter.Controllers
         /// <response code="201">Created</response>
         [HttpPost]
         [Route("/vhosts")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("VhostsPost")]
         public async Task<IActionResult> VhostsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Vhosts vhosts)

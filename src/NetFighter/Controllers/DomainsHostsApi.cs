@@ -93,7 +93,7 @@ namespace NetFighter.Controllers
         /// <response code="204">No Content</response>
         [HttpPatch]
         [Route("/domains_hosts")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("DomainsHostsPatch")]
         public async Task<IActionResult> DomainsHostsPatch([FromQuery (Name = "domain_id")]string domainId, [FromQuery (Name = "host_id")]string hostId, [FromHeader (Name = "Prefer")]string prefer, [FromBody]DomainsHosts domainsHosts)
@@ -114,7 +114,7 @@ namespace NetFighter.Controllers
         /// <response code="201">Created</response>
         [HttpPost]
         [Route("/domains_hosts")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("DomainsHostsPost")]
         public async Task<IActionResult> DomainsHostsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]DomainsHosts domainsHosts)

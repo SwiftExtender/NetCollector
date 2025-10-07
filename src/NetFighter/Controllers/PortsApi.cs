@@ -129,7 +129,7 @@ namespace NetFighter.Controllers
         /// <response code="204">No Content</response>
         [HttpPatch]
         [Route("/ports")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("PatchPorts")]
         public async Task<IActionResult> PortsPatch([FromBody] UpdatedPort port)
@@ -154,7 +154,7 @@ namespace NetFighter.Controllers
         /// <response code="201">Created</response>
         [HttpPost]
         [Route("/ports")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("AddPorts")]
         public async Task<IActionResult> PortsPost([FromBody] CreatedPort port)

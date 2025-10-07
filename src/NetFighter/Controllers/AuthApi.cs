@@ -29,7 +29,7 @@ namespace NetFighter.Controllers
 
         [HttpPost]
         [Route("/Login")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> LoginUser(AuthModel login)
         {
             if (!ModelState.IsValid)
@@ -64,8 +64,12 @@ namespace NetFighter.Controllers
                     ExpiresUtc = DateTime.UtcNow.AddDays(7)
                 });
 
-            return RedirectToAction("Index", "Home");
+            return new EmptyResult();
         }
+        [HttpGet]
+        [Route("/Dashboard")]
+        [Authorize]
+        public async Task<IActionResult> Dashboard() => View();
 
         [HttpPost]
         [Route("/Logout")]
@@ -73,7 +77,7 @@ namespace NetFighter.Controllers
         {
             await HttpContext.SignOutAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login");
         }
 
     }

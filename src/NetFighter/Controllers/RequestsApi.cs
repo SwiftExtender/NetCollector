@@ -14,9 +14,6 @@ using NetFighter.Data;
 
 namespace NetFighter.Controllers
 { 
-    /// <summary>
-    /// 
-    /// </summary>
     [ApiController]
     [Authorize]
     public class RequestsApiController : ControllerBase
@@ -111,7 +108,7 @@ namespace NetFighter.Controllers
         /// <response code="204">No Content</response>
         [HttpPatch]
         [Route("/requests")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("RequestsPatch")]
         public async Task<IActionResult> RequestsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "url_id")]string urlId, [FromQuery (Name = "created_at")]string createdAt, [FromQuery (Name = "method")]string method, [FromQuery (Name = "status")]string status, [FromQuery (Name = "response")]string response, [FromQuery (Name = "info")]string info, [FromQuery (Name = "raw_request")]string rawRequest, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Requests requests)
@@ -132,7 +129,7 @@ namespace NetFighter.Controllers
         /// <response code="201">Created</response>
         [HttpPost]
         [Route("/requests")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("RequestsPost")]
         public async Task<IActionResult> RequestsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Requests requests)

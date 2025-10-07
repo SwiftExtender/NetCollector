@@ -241,11 +241,6 @@
                     {{ loading ? 'Signing in...' : 'Sign In' }}
                 </button>
             </form>
-
-@*             <div class="links">
-                <a href="#">Forgot password?</a>
-                <a asp-action="Register">Create account</a>
-            </div> *@
         </div>
     </div>
 
@@ -270,13 +265,13 @@
 
                     try {
                         // Simulate API call - replace with your actual API endpoint
-                        // await axios.post('/AuthApi/Login', form.value);
+                        await axios.post('/Login', form.value);
 
                         // For demo - remove this timeout in real implementation
-                        await new Promise(resolve => setTimeout(resolve, 1500));
+                        //await new Promise(resolve => setTimeout(resolve, 1500));
 
                         // Redirect after successful login
-                        window.location.href = '/';
+                        window.location.href = '/Dashboard';
                     } catch (error) {
                         errorMessage.value = 'Invalid username or password';
                         console.error('Login error:', error);

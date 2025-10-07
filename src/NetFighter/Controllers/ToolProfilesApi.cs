@@ -105,7 +105,7 @@ namespace NetFighter.Controllers
         /// <response code="204">No Content</response>
         [HttpPatch]
         [Route("/tool_profiles")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json","text/csv")]
         [ValidateModelState]
         [SwaggerOperation("ToolProfilesPatch")]
         public async Task<IActionResult> StartupProfilesPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "tool_id")]string toolId, [FromQuery (Name = "name")]string name, [FromQuery (Name = "configuration")]string configuration, [FromQuery (Name = "created_at")]string createdAt, [FromQuery (Name = "updated_at")]string updatedAt, [FromHeader (Name = "Prefer")]string prefer, [FromBody]ToolProfiles startupProfiles)
@@ -126,7 +126,7 @@ namespace NetFighter.Controllers
         /// <response code="201">Created</response>
         [HttpPost]
         [Route("/tool_profiles")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("ToolProfilesPost")]
         public async Task<IActionResult> StartupProfilesPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]ToolProfiles startupProfiles)

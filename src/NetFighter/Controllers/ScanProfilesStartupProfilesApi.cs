@@ -95,7 +95,7 @@ namespace NetFighter.Controllers
         /// <response code="204">No Content</response>
         [HttpPatch]
         [Route("/scan_profiles_startup_profiles")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("ScanProfilesStartupProfilesPatch")]
         public async Task<IActionResult> ScanProfilesStartupProfilesPatch([FromQuery (Name = "scan_profile_id")]string scanProfileId, [FromQuery (Name = "startup_profile_id")]string startupProfileId, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Prefer")]string prefer, [FromBody] ScanProfilesToolProfiles scanProfilesStartupProfiles)
@@ -116,7 +116,7 @@ namespace NetFighter.Controllers
         /// <response code="201">Created</response>
         [HttpPost]
         [Route("/scan_profiles_startup_profiles")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("ScanProfilesStartupProfilesPost")]
         public async Task<IActionResult> ScanProfilesStartupProfilesPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody] ScanProfilesToolProfiles scanProfilesStartupProfiles)

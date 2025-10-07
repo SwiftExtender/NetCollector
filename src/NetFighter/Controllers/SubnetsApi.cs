@@ -92,7 +92,7 @@ namespace NetFighter.Controllers
         /// <response code="204">No Content</response>
         [HttpPatch]
         [Route("/subnets")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("SubnetsPatch")]
         public async Task<IActionResult> SubnetsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "cidr")]string cidr, [FromQuery (Name = "name")]string name, [FromQuery (Name = "description")]string description, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Subnets subnets)
@@ -113,7 +113,7 @@ namespace NetFighter.Controllers
         /// <response code="201">Created</response>
         [HttpPost]
         [Route("/subnets")]
-        [Consumes("application/json", "application/vnd.pgrst.object+json;nulls=stripped", "application/vnd.pgrst.object+json", "text/csv")]
+        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("SubnetsPost")]
         public async Task<IActionResult> SubnetsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Subnets subnets)
