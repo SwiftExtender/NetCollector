@@ -62,7 +62,7 @@ namespace NetFighter.Controllers
         }
         [HttpGet]
         [Route("Dashboard")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Dashboard() => View();
 
         [HttpPost]
@@ -73,6 +73,5 @@ namespace NetFighter.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme);
             return Redirect("/");
         }
-
     }
 }

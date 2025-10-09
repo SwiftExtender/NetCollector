@@ -1,22 +1,25 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using NetFighter.Attributes;
-using NetFighter.Data;
-using NetFighter.Models;
-using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Newtonsoft.Json;
+using NetFighter.Attributes;
+using NetFighter.Models;
+using NetFighter.Data;
+using NetFighter.RequestModels;
 using System.Threading.Tasks;
-using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using NetFighter.Models.ResponseModels;
 
 namespace NetFighter.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ScanProfilesApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -26,10 +29,10 @@ namespace NetFighter.Controllers
             _context = context;
         }
         [HttpDelete]
-        [Route("/scan_profiles")]
+        [Route("/scan_profiles/{id}")]
         [ValidateModelState]
         [SwaggerOperation("ScanProfilesDelete")]
-        public async Task<IActionResult> ScanProfilesDelete([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "description")]string description, [FromQuery (Name = "created_at")]string createdAt, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> ScanProfilesDelete(int id)
         {
 
             throw new NotImplementedException();
@@ -58,11 +61,12 @@ namespace NetFighter.Controllers
 
             throw new NotImplementedException();
         }
+
         [HttpPost]
         [Route("/scan_profiles")]
         [ValidateModelState]
         [SwaggerOperation("ScanProfilesPost")]
-        public async Task<IActionResult> ([FromBody]ScanProfiles scanProfiles)
+        public async Task<IActionResult> ScanProfilesPost([FromBody]ScanProfiles scanProfiles)
         {
             try
             {

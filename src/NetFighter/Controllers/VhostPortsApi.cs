@@ -16,7 +16,7 @@ using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 namespace NetFighter.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class VhostPortsApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -26,10 +26,10 @@ namespace NetFighter.Controllers
             _context = context;
         }
         [HttpDelete]
-        [Route("/vhost_ports")]
+        [Route("/vhost_ports/{id}")]
         [ValidateModelState]
         [SwaggerOperation("VhostPortsDelete")]
-        public async Task<IActionResult> VhostPortsDelete([FromQuery (Name = "vhost_id")]string vhostId, [FromQuery (Name = "port_id")]string portId, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> VhostPortsDelete(int id)
         {
 
             throw new NotImplementedException();

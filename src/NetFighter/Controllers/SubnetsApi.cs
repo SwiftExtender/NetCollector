@@ -17,7 +17,7 @@ using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 namespace NetFighter.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class SubnetsApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -27,10 +27,10 @@ namespace NetFighter.Controllers
         }
 
         [HttpDelete]
-        [Route("/subnets")]
+        [Route("/subnets/{id}")]
         [ValidateModelState]
         [SwaggerOperation("SubnetsDelete")]
-        public async Task<IActionResult> SubnetsDelete([FromQuery (Name = "id")]string id, [FromQuery (Name = "cidr")]string cidr, [FromQuery (Name = "name")]string name, [FromQuery (Name = "description")]string description, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> SubnetsDelete(int id)
         {
 
             throw new NotImplementedException();

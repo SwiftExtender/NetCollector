@@ -19,7 +19,7 @@ using NetFighter.Models.ResponseModels;
 namespace NetFighter.Controllers
 { 
     [ApiController]
-    [Authorize]
+    ////[Authorize]
     public class HostsApiController : ControllerBase
     { 
         private readonly ApplicationDbContext _context;
@@ -33,11 +33,11 @@ namespace NetFighter.Controllers
         [Route("/hosts/{id}")]
         [ValidateModelState]
         [SwaggerOperation("HostsDelete")]
-        public async Task<IActionResult> HostsDelete([FromBody] string id)
+        public async Task<IActionResult> HostsDelete(int id)
         {
             try
             {
-                if (string.IsNullOrEmpty(id))
+                if (id <= 0)
                 {
                     return BadRequest("Host ID is required");
                 }
@@ -98,24 +98,24 @@ namespace NetFighter.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("/hosts/{id}")]
-        [ValidateModelState]
-        [SwaggerOperation("GetPort")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<Hosts>), description: "Get host by id")]
-        public async Task<IActionResult> GetPort(int id)
-        {
-            try
-            {
-                Hosts selectedHost = await _context.Hosts.SingleAsync(p => p.Id == id);
-                return Ok(selectedHost);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, new { ex.Message });
-            }
-        }
+        //[HttpGet]
+        //[Route("/hosts/{id}")]
+        //[ValidateModelState]
+        //[SwaggerOperation("GetPortsofHost")]
+        //[SwaggerResponse(statusCode: 200, type: typeof(List<Hosts>), description: "Get host by id")]
+        //public async Task<IActionResult> GetPortsofHost(int id)
+        //{
+        //    try
+        //    {
+        //        Hosts selectedHost = await _context.Hosts.SingleAsync(p => p.Id == id);
+        //        return Ok(selectedHost);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //        return StatusCode(500, new { ex.Message });
+        //    }
+        //}
 
         [HttpPatch]
         [Route("/hosts")]
@@ -125,10 +125,14 @@ namespace NetFighter.Controllers
         {
             try
             {
-                Hosts updatedHost = new Hosts() { Id = host.Id };
+                Hosts updatedHost = await _context.Hosts.FindAsync(host.Id);
+                if (updatedHost == null)
+                {
+                    return NotFound();
+                }
                 _context.Hosts.Update(new Hosts() { Id = host.Id, Ip = host.Ip, Info = host.Info });
                 await _context.SaveChangesAsync();
-                return StatusCode(201);
+                return StatusCode(204);
             }
             catch (Exception ex)
             {

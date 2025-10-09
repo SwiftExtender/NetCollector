@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace NetFighter.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class KeywordsApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -28,7 +28,8 @@ namespace NetFighter.Controllers
         [Route("/keywords/{id}")]
         [ValidateModelState]
         [SwaggerOperation("KeywordsDelete")]
-        public async Task<IActionResult> KeywordsDelete([FromQuery (Name = "id")]int id)
+        [SwaggerResponse(statusCode: 204, type: typeof(List<Hosts>), description: "Delete keyword")]
+        public async Task<IActionResult> KeywordsDelete(int id)
         {
             try
             {

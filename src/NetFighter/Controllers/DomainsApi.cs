@@ -17,20 +17,54 @@ using System.Threading.Tasks;
 namespace NetFighter.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class DomainsApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
         public DomainsApiController(ApplicationDbContext context)
         {
             _context = context;
         }
-        [HttpDelete]
-        [Route("/domains/{id}")]
+
+        //[HttpDelete]
+        //[Route("domains/{id}")]
+        //[ValidateModelState]
+        //[SwaggerOperation("DomainsDelete")]
+        //public async Task<IActionResult> DomainsDelete([FromQuery] int id)
+        //{
+        //    try
+        //    {
+        //        if (id <= 0)
+        //        {
+        //            return BadRequest("Domain ID is required");
+        //        }
+        //        var domain = await _context.Domains.FindAsync(id);
+        //        _context.Domains.Remove(domain);
+        //        await _context.SaveChangesAsync();
+        //        return NoContent();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //        return StatusCode(500, new { ex.Message });
+        //    }
+        //}
+
+        [HttpGet]
+        [Route("domains")]
         [ValidateModelState]
-        [SwaggerOperation("DomainsDelete")]
-        public async Task<IActionResult> DomainsDelete([FromQuery (Name = "id")]string id)
+        [SwaggerOperation("DomainsGet")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Domains>))]
+        public async Task<IActionResult> DomainsGet()
+        {
+            var allHosts = await _context.Domains.ToListAsync();
+            return Ok(allHosts);
+        }
+        [HttpPatch]
+        [Route("domains")]
+        [ValidateModelState]
+        [SwaggerOperation("DomainsPatch")]
+        public async Task<IActionResult> DomainsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "info")]string info, [FromBody]Domains domains)
         {
             try
             {
@@ -39,7 +73,7 @@ namespace NetFighter.Controllers
                     return BadRequest("Domain ID is required");
                 }
                 var domain = await _context.Domains.FindAsync(id);
-                _context.Domains.Remove(domain);
+                _context.Domains.Update(domain);
                 await _context.SaveChangesAsync();
                 return NoContent();
             }
@@ -50,29 +84,8 @@ namespace NetFighter.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("/domains")]
-        [ValidateModelState]
-        [SwaggerOperation("DomainsGet")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<Domains>))]
-        public async Task<IActionResult> DomainsGet([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "info")]string info, [FromQuery (Name = "select")]string select, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Prefer")]string prefer)
-        {
-            var allHosts = await _context.Domains.ToListAsync();
-            return Ok(allHosts);
-
-        }
-        [HttpPatch]
-        [Route("/domains")]
-        [ValidateModelState]
-        [SwaggerOperation("DomainsPatch")]
-        public async Task<IActionResult> DomainsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "info")]string info, [FromBody]Domains domains)
-        {
-
-            throw new NotImplementedException();
-        }
-
         [HttpPost]
-        [Route("/domains")]
+        [Route("domains")]
         [ValidateModelState]
         [SwaggerOperation("DomainsPost")]
         public async Task<IActionResult> DomainsPost([FromBody]Domains domains)

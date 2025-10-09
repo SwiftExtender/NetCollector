@@ -15,7 +15,7 @@ using NetFighter.Data;
 namespace NetFighter.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class DomainsHostsApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -25,31 +25,31 @@ namespace NetFighter.Controllers
             _context = context;
         }
 
-        [HttpDelete]
-        [Route("/domains_hosts/{id}")]
-        [ValidateModelState]
-        [SwaggerOperation("DomainsHostsDelete")]
-        public async Task<IActionResult> DomainsHostsDelete([FromQuery (Name = "id")]string id)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(id))
-                {
-                    return BadRequest("DomainsHosts ID is required");
-                }
-                var domain = await _context.DomainsHosts.FindAsync(id);
-                _context.DomainsHosts.Remove(domain);
-                await _context.SaveChangesAsync();
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, new { ex.Message });
-            }
-        }
+        //[HttpDelete]
+        //[Route("/domainshosts/{id}")]
+        //[ValidateModelState]
+        //[SwaggerOperation("DomainsHostsDelete")]
+        //public async Task<IActionResult> DomainsHostsDelete([FromQuery (Name = "id")]int id)
+        //{
+        //    try
+        //    {
+        //        if (id <= 0)
+        //        {
+        //            return BadRequest("DomainsHosts ID is required");
+        //        }
+        //        var domain = await _context.DomainsHosts.FindAsync(id);
+        //        _context.DomainsHosts.Remove(domain);
+        //        await _context.SaveChangesAsync();
+        //        return NoContent();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //        return StatusCode(500, new { ex.Message });
+        //    }
+        //}
         [HttpGet]
-        [Route("/domains_hosts")]
+        [Route("/domainshosts")]
         [ValidateModelState]
         [SwaggerOperation("DomainsHostsGet")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<DomainsHosts>), description: "OK")]
@@ -64,7 +64,7 @@ namespace NetFighter.Controllers
             return new ObjectResult(example);
         }
         [HttpPatch]
-        [Route("/domains_hosts")]
+        [Route("/domainshosts")]
         [ValidateModelState]
         [SwaggerOperation("DomainsHostsPatch")]
         public async Task<IActionResult> DomainsHostsPatch([FromQuery (Name = "domain_id")]string domainId, [FromQuery (Name = "host_id")]string hostId, [FromHeader (Name = "Prefer")]string prefer, [FromBody]DomainsHosts domainsHosts)
@@ -73,7 +73,7 @@ namespace NetFighter.Controllers
             throw new NotImplementedException();
         }
         [HttpPost]
-        [Route("/domains_hosts")]
+        [Route("/domainshosts")]
         [ValidateModelState]
         [SwaggerOperation("DomainsHostsPost")]
         public async Task<IActionResult> DomainsHostsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]DomainsHosts domainsHosts)

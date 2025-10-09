@@ -16,7 +16,7 @@ using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 namespace NetFighter.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ScanProfilesStartupProfilesApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -26,10 +26,10 @@ namespace NetFighter.Controllers
             _context = context;
         }
         [HttpDelete]
-        [Route("/scan_profiles_startup_profiles")]
+        [Route("/scan_profiles_startup_profiles/{id}")]
         [ValidateModelState]
         [SwaggerOperation("ScanProfilesStartupProfilesDelete")]
-        public async Task<IActionResult> ScanProfilesStartupProfilesDelete([FromQuery (Name = "scan_profile_id")]string scanProfileId, [FromQuery (Name = "startup_profile_id")]string startupProfileId, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> ScanProfilesStartupProfilesDelete(int id)
         {
 
             throw new NotImplementedException();

@@ -16,7 +16,7 @@ using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 namespace NetFighter.Controllers
 { 
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class RequestsApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -29,7 +29,7 @@ namespace NetFighter.Controllers
         [Route("/requests")]
         [ValidateModelState]
         [SwaggerOperation("RequestsDelete")]
-        public async Task<IActionResult> RequestsDelete([FromQuery (Name = "id")]string id, [FromQuery (Name = "url_id")]string urlId, [FromQuery (Name = "created_at")]string createdAt, [FromQuery (Name = "method")]string method, [FromQuery (Name = "status")]string status, [FromQuery (Name = "response")]string response, [FromQuery (Name = "info")]string info, [FromQuery (Name = "raw_request")]string rawRequest, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> RequestsDelete(int id)
         {
 
             throw new NotImplementedException();
@@ -72,11 +72,6 @@ namespace NetFighter.Controllers
                 });
                 await _context.SaveChangesAsync();
                 return StatusCode(201);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, new { ex.Message });
             }
             catch (Exception ex)
             {

@@ -22,7 +22,16 @@
         });
     }
 
-    async loadDomains() {
+    async load
+
+
+
+
+
+
+
+
+        () {
         const domains = await this.api.getDomains();
         const headers = ['ID', 'Name', 'Info'];
         const actions = [

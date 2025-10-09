@@ -18,20 +18,20 @@ using NetFighter.RequestModels;
 namespace NetFighter.Controllers
 {
     [ApiController]
-    ////[Authorize]
-    public class PortsApiController : ControllerBase
+    //[Authorize]
+    public class NotesApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public PortsApiController(ApplicationDbContext context)
+        public NotesApiController(ApplicationDbContext context)
         {
             _context = context;
         }
         [HttpDelete]
-        [Route("/ports/{id}")]
+        [Route("/notes/{id}")]
         [ValidateModelState]
-        [SwaggerOperation("PortsDelete")]
-        public async Task<IActionResult> PortsDelete(int id)
+        [SwaggerOperation("NotesDelete")]
+        public async Task<IActionResult> NotesDelete(int id)
         {
             try
             {
@@ -50,17 +50,18 @@ namespace NetFighter.Controllers
                 return StatusCode(500, new { ex.Message });
             }
         }
+
         [HttpGet]
-        [Route("/host/{hostId}/ports")]
+        [Route("/notes/{id}")]
         [ValidateModelState]
-        [SwaggerOperation("GetHostPorts")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<Ports>), description: "OK")]
-        public async Task<IActionResult> GetHostPorts(int hostId)
+        [SwaggerOperation("GetNote")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Notes>), description: "OK")]
+        public async Task<IActionResult> GetNote(int id)
         {
             try
             {
-                var selectedPort = await _context.Ports.Where(p => p.HostId.Equals(hostId)).ToListAsync();
-                return Ok(selectedPort);
+                Notes notes = await _context.Notes.SingleAsync(p => p.Id == id);
+                return Ok(notes);
             }
             catch (Exception ex)
             {
@@ -70,35 +71,15 @@ namespace NetFighter.Controllers
         }
 
         [HttpGet]
-        [Route("/ports/{id}")]
+        [Route("/notes")]
         [ValidateModelState]
-        [SwaggerOperation("GetPort")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<Ports>), description: "OK")]
-        public async Task<IActionResult> GetPort(int id)
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Notes>), description: "OK")]
+        public async Task<IActionResult> GetNotes()
         {
             try
             {
-                Ports selectedPort = await _context.Ports.SingleAsync(p => p.Id == id);
-                return Ok(selectedPort);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, new { ex.Message });
-            }
-        }
-
-        [HttpGet]
-        [Route("/ports")]
-        [ValidateModelState]
-        [SwaggerOperation("GetAllPorts")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<Ports>), description: "OK")]
-        public async Task<IActionResult> PortsGet()
-        {
-            try
-            {
-                List<Ports> allPorts = await _context.Ports.ToListAsync();
-                return Ok(allPorts);
+                List<Notes> notes = await _context.Notes.ToListAsync();
+                return Ok(notes);
             }
             catch (Exception ex)
             {
@@ -107,15 +88,15 @@ namespace NetFighter.Controllers
             }
         }
         [HttpPatch]
-        [Route("/ports")]
+        [Route("/notes")]
         [ValidateModelState]
-        [SwaggerOperation("PatchPorts")]
-        public async Task<IActionResult> PortsPatch([FromBody] UpdatedPort port)
+        [SwaggerOperation("PatchNotes")]
+        public async Task<IActionResult> NotesPatch([FromBody] UpdatedPort port)
         {
             try
             {
-                Ports changedPort = new Ports() { Id = port.Id, HostId = port.HostId, Number = port.Number, Protocol = port.Protocol, Info = port.Info};
-                _context.Ports.Update(changedPort);
+                Notes note = new Notes() { };
+                _context.Notes.Update(note);
                 await _context.SaveChangesAsync();
                 return StatusCode(200);
             }
@@ -126,15 +107,15 @@ namespace NetFighter.Controllers
             }
         }
         [HttpPost]
-        [Route("/ports")]
+        [Route("/notes")]
         [ValidateModelState]
         [SwaggerOperation("AddPorts")]
-        public async Task<IActionResult> PortsPost([FromBody] CreatedPort port)
+        public async Task<IActionResult> NotesPost([FromBody] Notes note)
         {
             try
             {
-                Ports createdPort = new Ports() { HostId = port.HostId, Number = port.Number, Info = port.Info, Protocol = port.Protocol };
-                _context.Ports.Add(createdPort);
+                Notes createdNote = new Notes() { Date = DateTime.UtcNow, Text = note.Text };
+                _context.Notes.Add(createdNote);
                 await _context.SaveChangesAsync();
                 return StatusCode(201);
             }

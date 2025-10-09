@@ -6,17 +6,14 @@ using NetFighter.Data;
 using NetFighter.Models;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace NetFighter.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ParamsApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -30,7 +27,7 @@ namespace NetFighter.Controllers
         [Route("/params/{id}")]
         [ValidateModelState]
         [SwaggerOperation("ParamsDelete")]
-        public async Task<IActionResult> ParamsDelete([FromQuery (Name = "id")]int id)
+        public async Task<IActionResult> ParamsDelete(int id)
         {
             try
             {
@@ -83,7 +80,8 @@ namespace NetFighter.Controllers
             {
                 _context.Params.Add(new Params() { 
                     Name = param.Name,
-                    Value = param.Value
+                    Value = param.Value,
+                    //Id 
                 });
                 await _context.SaveChangesAsync();
                 return StatusCode(201);
