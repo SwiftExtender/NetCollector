@@ -19,57 +19,25 @@ using Newtonsoft.Json;
 using NetFighter.Converters;
 
 namespace NetFighter.Models
-{ 
-    /// <summary>
-    /// 
-    /// </summary>
+{
     [DataContract]
     public partial class Tools : IEquatable<Tools>
     {
-        /// <summary>
-        /// Note: This is a Primary Key.&lt;pk/&gt;
-        /// </summary>
-        /// <value>Note: This is a Primary Key.&lt;pk/&gt;</value>
         [Key]
         [Required]
         [DataMember(Name="id", EmitDefaultValue=true)]
         public int Id { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Name
-        /// </summary>
         [Required]
         [DataMember(Name="name", EmitDefaultValue=false)]
         public string Name { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Description
-        /// </summary>
         [DataMember(Name="description", EmitDefaultValue=false)]
         public string Description { get; set; }
-
-        /// <summary>
-        /// Gets or Sets VarVersion
-        /// </summary>
         [DataMember(Name="version", EmitDefaultValue=false)]
         public string VarVersion { get; set; }
-
-        /// <summary>
-        /// Gets or Sets CreatedAt
-        /// </summary>
         [DataMember(Name="created_at", EmitDefaultValue=false)]
         public string CreatedAt { get; set; } = "now()";
-
-        /// <summary>
-        /// Gets or Sets UpdatedAt
-        /// </summary>
         [DataMember(Name="updated_at", EmitDefaultValue=false)]
         public string UpdatedAt { get; set; } = "now()";
-
-        /// <summary>
-        /// Returns the string presentation of the object
-        /// </summary>
-        /// <returns>String presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -83,33 +51,16 @@ namespace NetFighter.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="obj">Object to be compared</param>
-        /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
             return obj.GetType() == GetType() && Equals((Tools)obj);
         }
-
-        /// <summary>
-        /// Returns true if Tools instances are equal
-        /// </summary>
-        /// <param name="other">Instance of Tools to be compared</param>
-        /// <returns>Boolean</returns>
         public bool Equals(Tools other)
         {
             if (other is null) return false;
@@ -147,17 +98,11 @@ namespace NetFighter.Models
                     UpdatedAt.Equals(other.UpdatedAt)
                 );
         }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
         public override int GetHashCode()
         {
-            unchecked // Overflow is fine, just wrap
+            unchecked
             {
                 var hashCode = 41;
-                // Suitable nullity checks etc, of course :)
                     
                     hashCode = hashCode * 59 + Id.GetHashCode();
                     if (Name != null)

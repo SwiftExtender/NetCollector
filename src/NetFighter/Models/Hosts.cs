@@ -9,41 +9,21 @@ using Newtonsoft.Json;
 using NetFighter.Converters;
 
 namespace NetFighter.Models
-{ 
-    /// <summary>
-    /// 
-    /// </summary>
+{
     [DataContract]
     public partial class Hosts : IEquatable<Hosts>
     {
-        /// <summary>
-        /// Note: This is a Primary Key.&lt;pk/&gt;
-        /// </summary>
-        /// <value>Note: This is a Primary Key.&lt;pk/&gt;</value>
         [Key]
         [Required]
         [DataMember(Name="id", EmitDefaultValue=true)]
         public int Id { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Ip
-        /// </summary>
         [Required]
         [DataMember(Name="ip", EmitDefaultValue=false)]
         public string Ip { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Info
-        /// </summary>
         [DataMember(Name="info", EmitDefaultValue=false)]
         public string Info { get; set; }
         public ICollection<DomainsHosts> DomainsHosts { get; }
         public ICollection<Ports> Ports { get; }
-
-        /// <summary>
-        /// Returns the string presentation of the object
-        /// </summary>
-        /// <returns>String presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -51,37 +31,19 @@ namespace NetFighter.Models
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Ip: ").Append(Ip).Append("\n");
             sb.Append("  Info: ").Append(Info).Append("\n");
-            //sb.Append("  SubnetId: ").Append(SubnetId).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
-
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="obj">Object to be compared</param>
-        /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
             return obj.GetType() == GetType() && Equals((Hosts)obj);
         }
-
-        /// <summary>
-        /// Returns true if Hosts instances are equal
-        /// </summary>
-        /// <param name="other">Instance of Hosts to be compared</param>
-        /// <returns>Boolean</returns>
         public bool Equals(Hosts other)
         {
             if (other is null) return false;
@@ -102,32 +64,19 @@ namespace NetFighter.Models
                     Info == other.Info ||
                     Info != null &&
                     Info.Equals(other.Info)
-                );// && 
-                //(
-                    //SubnetId == other.SubnetId ||
-                    
-                    //SubnetId.Equals(other.SubnetId)
-                //);
+                );// &&
         }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
         public override int GetHashCode()
         {
-            unchecked // Overflow is fine, just wrap
+            unchecked
             {
                 var hashCode = 41;
-                // Suitable nullity checks etc, of course :)
                     
                     hashCode = hashCode * 59 + Id.GetHashCode();
                     if (Ip != null)
                     hashCode = hashCode * 59 + Ip.GetHashCode();
                     if (Info != null)
                     hashCode = hashCode * 59 + Info.GetHashCode();
-                    
-                    //hashCode = hashCode * 59 + SubnetId.GetHashCode();
                 return hashCode;
             }
         }

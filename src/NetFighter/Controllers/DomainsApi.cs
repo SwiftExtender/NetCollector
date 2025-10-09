@@ -15,10 +15,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace NetFighter.Controllers
-{ 
-    /// <summary>
-    /// 
-    /// </summary>
+{
     [ApiController]
     [Authorize]
     public class DomainsApiController : ControllerBase
@@ -29,14 +26,6 @@ namespace NetFighter.Controllers
         {
             _context = context;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="name"></param>
-        /// <param name="info"></param>
-        /// <param name="prefer">Preference</param>
-        /// <response code="204">No Content</response>
         [HttpDelete]
         [Route("/domains/{id}")]
         [ValidateModelState]
@@ -72,25 +61,12 @@ namespace NetFighter.Controllers
             return Ok(allHosts);
 
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="name"></param>
-        /// <param name="info"></param>
-        /// <param name="prefer">Preference</param>
-        /// <param name="domains">domains</param>
-        /// <response code="204">No Content</response>
         [HttpPatch]
         [Route("/domains")]
         [ValidateModelState]
         [SwaggerOperation("DomainsPatch")]
         public async Task<IActionResult> DomainsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "info")]string info, [FromBody]Domains domains)
         {
-
-            //TODO: Uncomment the next line to return response 204 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(204);
 
             throw new NotImplementedException();
         }

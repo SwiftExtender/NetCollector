@@ -19,74 +19,33 @@ using Newtonsoft.Json;
 using NetFighter.Converters;
 
 namespace NetFighter.Models
-{ 
-    /// <summary>
-    /// 
-    /// </summary>
+{
     [DataContract]
     public partial class Requests : IEquatable<Requests>
     {
-        /// <summary>
-        /// Note: This is a Primary Key.&lt;pk/&gt;
-        /// </summary>
-        /// <value>Note: This is a Primary Key.&lt;pk/&gt;</value>
         [Key]
         [Required]
         [DataMember(Name="id", EmitDefaultValue=true)]
         public int Id { get; set; }
-
-        /// <summary>
-        /// Note: This is a Foreign Key to &#x60;urls.id&#x60;.&lt;fk table&#x3D;&#39;urls&#39; column&#x3D;&#39;id&#39;/&gt;
-        /// </summary>
-        /// <value>Note: This is a Foreign Key to &#x60;urls.id&#x60;.&lt;fk table&#x3D;&#39;urls&#39; column&#x3D;&#39;id&#39;/&gt;</value>
         [Required]
         [DataMember(Name="url_id", EmitDefaultValue=true)]
         public int UrlId { get; set; }
-
-        /// <summary>
-        /// Gets or Sets CreatedAt
-        /// </summary>
         [Required]
         [DataMember(Name="created_at", EmitDefaultValue=false)]
         public string CreatedAt { get; set; } = "CURRENT_TIMESTAMP";
-
-        /// <summary>
-        /// Gets or Sets Method
-        /// </summary>
         [Required]
         [DataMember(Name="method", EmitDefaultValue=false)]
         public string Method { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Status
-        /// </summary>
         [DataMember(Name="status", EmitDefaultValue=true)]
         public int Status { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Response
-        /// </summary>
         [Required]
         [DataMember(Name="response", EmitDefaultValue=false)]
         public string Response { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Info
-        /// </summary>
         [DataMember(Name="info", EmitDefaultValue=false)]
         public string Info { get; set; }
-
-        /// <summary>
-        /// Gets or Sets RawRequest
-        /// </summary>
         [Required]
         [DataMember(Name="raw_request", EmitDefaultValue=false)]
         public string RawRequest { get; set; }
-
-        /// <summary>
-        /// Returns the string presentation of the object
-        /// </summary>
-        /// <returns>String presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -102,33 +61,16 @@ namespace NetFighter.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="obj">Object to be compared</param>
-        /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
             return obj.GetType() == GetType() && Equals((Requests)obj);
         }
-
-        /// <summary>
-        /// Returns true if Requests instances are equal
-        /// </summary>
-        /// <param name="other">Instance of Requests to be compared</param>
-        /// <returns>Boolean</returns>
         public bool Equals(Requests other)
         {
             if (other is null) return false;
@@ -176,17 +118,11 @@ namespace NetFighter.Models
                     RawRequest.Equals(other.RawRequest)
                 );
         }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
         public override int GetHashCode()
         {
-            unchecked // Overflow is fine, just wrap
+            unchecked
             {
                 var hashCode = 41;
-                // Suitable nullity checks etc, of course :)
                     
                     hashCode = hashCode * 59 + Id.GetHashCode();
                     

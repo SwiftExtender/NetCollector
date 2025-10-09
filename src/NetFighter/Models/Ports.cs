@@ -9,54 +9,26 @@ using Newtonsoft.Json;
 using NetFighter.Converters;
 
 namespace NetFighter.Models
-{ 
-    /// <summary>
-    /// 
-    /// </summary>
+{
     [DataContract]
     public partial class Ports : IEquatable<Ports>
     {
-        /// <summary>
-        /// Note: This is a Primary Key.&lt;pk/&gt;
-        /// </summary>
-        /// <value>Note: This is a Primary Key.&lt;pk/&gt;</value>
         [Key]
         [Required]
         [DataMember(Name="id", EmitDefaultValue=true)]
         public int Id { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Number
-        /// </summary>
         [Required]
         [DataMember(Name="number", EmitDefaultValue=true)]
         public int Number { get; set; }
-
-        /// <summary>
-        /// Note: This is a Foreign Key to &#x60;hosts.id&#x60;.&lt;fk table&#x3D;&#39;hosts&#39; column&#x3D;&#39;id&#39;/&gt;
-        /// </summary>
-        /// <value>Note: This is a Foreign Key to &#x60;hosts.id&#x60;.&lt;fk table&#x3D;&#39;hosts&#39; column&#x3D;&#39;id&#39;/&gt;</value>
         [Required]
         [DataMember(Name="host_id", EmitDefaultValue=true)]
         public int HostId { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Info
-        /// </summary>
         [DataMember(Name="info", EmitDefaultValue=false)]
         public string Info { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Protocol
-        /// </summary>
         [Required]
         [DataMember(Name="protocol", EmitDefaultValue=false)]
         public string Protocol { get; set; }
         public ICollection<VhostsPorts>? VhostPorts { get; }
-        /// <summary>
-        /// Returns the string presentation of the object
-        /// </summary>
-        /// <returns>String presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -69,33 +41,16 @@ namespace NetFighter.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="obj">Object to be compared</param>
-        /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
             return obj.GetType() == GetType() && Equals((Ports)obj);
         }
-
-        /// <summary>
-        /// Returns true if Ports instances are equal
-        /// </summary>
-        /// <param name="other">Instance of Ports to be compared</param>
-        /// <returns>Boolean</returns>
         public bool Equals(Ports other)
         {
             if (other is null) return false;
@@ -128,17 +83,11 @@ namespace NetFighter.Models
                     Protocol.Equals(other.Protocol)
                 );
         }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
         public override int GetHashCode()
         {
-            unchecked // Overflow is fine, just wrap
+            unchecked
             {
                 var hashCode = 41;
-                // Suitable nullity checks etc, of course :)
                     
                     hashCode = hashCode * 59 + Id.GetHashCode();
                     

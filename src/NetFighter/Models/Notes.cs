@@ -11,16 +11,9 @@ using System.Xml.Linq;
 
 namespace NetFighter.Models
 {
-    /// <summary>
-    /// 
-    /// </summary>
     [DataContract]
     public partial class Notes : IEquatable<Notes>
     {
-        /// <summary>
-        /// Note: This is a Primary Key.&lt;pk/&gt;
-        /// </summary>
-        /// <value>Note: This is a Primary Key.&lt;pk/&gt;</value>
         [Required]
         [DataMember(Name = "id", EmitDefaultValue = true)]
         public int Id { get; set; }
@@ -44,11 +37,6 @@ namespace NetFighter.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);

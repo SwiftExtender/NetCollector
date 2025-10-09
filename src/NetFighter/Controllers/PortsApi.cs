@@ -16,10 +16,7 @@ using System.Linq;
 using NetFighter.RequestModels;
 
 namespace NetFighter.Controllers
-{ 
-    /// <summary>
-    /// 
-    /// </summary>
+{
     [ApiController]
     [Authorize]
     public class PortsApiController : ControllerBase
@@ -30,12 +27,6 @@ namespace NetFighter.Controllers
         {
             _context = context;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <response code="204">No Content</response>
         [HttpDelete]
         [Route("/ports")]
         [ValidateModelState]
@@ -55,13 +46,6 @@ namespace NetFighter.Controllers
                 return StatusCode(500, new { ex.Message });
             }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hostId"></param>
-        /// <response code="200">OK</response>
-        /// <response code="206">Partial Content</response>
         [HttpGet]
         [Route("/host/{hostId}/ports")]
         [ValidateModelState]
@@ -105,7 +89,7 @@ namespace NetFighter.Controllers
         [ValidateModelState]
         [SwaggerOperation("GetAllPorts")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<Ports>), description: "OK")]
-        public async Task<IActionResult> PortsGet() //[FromQuery(Name = "offset")] string offset, [FromQuery(Name = "limit")] string limit
+        public async Task<IActionResult> PortsGet()
         {
             try
             {
@@ -118,15 +102,6 @@ namespace NetFighter.Controllers
                 return StatusCode(500, new { ex.Message });
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="number"></param>
-        /// <param name="hostId"></param>
-        /// <param name="info"></param>
-        /// <param name="protocol"></param>
-        /// <response code="204">No Content</response>
         [HttpPatch]
         [Route("/ports")]
         [Consumes("application/json", "text/csv")]
@@ -147,11 +122,6 @@ namespace NetFighter.Controllers
                 return StatusCode(500, new { ex.Message });
             }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <response code="201">Created</response>
         [HttpPost]
         [Route("/ports")]
         [Consumes("application/json", "text/csv")]

@@ -31,11 +31,9 @@ namespace NetFighter.Controllers
 
         [HttpPost]
         [Route("Login")]
-        //[Consumes("application/x-www-form-urlencoded")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromForm] string username, [FromForm] string password)
         {
-            // Authenticate user
             var user = await _authService.Authenticate(username, password);
 
             if (user == null)
@@ -43,13 +41,10 @@ namespace NetFighter.Controllers
                 ModelState.AddModelError("", "Invalid username or password");
                 return Redirect("/");
             }
-
-            // Create claims identity
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
-                //new Claim(ClaimTypes.Role, user.Role)
             };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -60,7 +55,6 @@ namespace NetFighter.Controllers
                 principal,
                 new AuthenticationProperties
                 {
-                    //IsPersistent = login.RememberMe,
                     ExpiresUtc = DateTime.UtcNow.AddDays(7)
                 });
 

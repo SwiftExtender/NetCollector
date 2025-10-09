@@ -22,9 +22,6 @@ namespace NetFighter.Models
         [Required]
         [DataMember(Name = "passwordhash", EmitDefaultValue = false)]
         public string PasswordHash { get; set; }
-        //[Required]
-        //[DataMember(Name = "role", EmitDefaultValue = false)]
-        //public string Role { get; set; }
         public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);

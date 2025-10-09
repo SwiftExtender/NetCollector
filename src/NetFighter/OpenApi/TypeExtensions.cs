@@ -14,16 +14,8 @@ using System.Text;
 
 namespace NetFighter.OpenApi
 {
-    /// <summary>
-    /// Replacement utilities from Swashbuckle.AspNetCore.SwaggerGen which are not in 5.x
-    /// </summary>
     public static class TypeExtensions
     {
-        /// <summary>
-        /// Produce a friendly name for the type which is unique.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="fullyQualified"></param>
         public static string FriendlyId(this Type type, bool fullyQualified = false)
         {
             var typeName = fullyQualified
@@ -44,11 +36,6 @@ namespace NetFighter.OpenApi
 
             return typeName;
         }
-
-        /// <summary>
-        /// Determine the fully qualified type name without type parameters.
-        /// </summary>
-        /// <param name="type"></param>
         public static string FullNameSansTypeParameters(this Type type)
         {
             var fullName = type.FullName;

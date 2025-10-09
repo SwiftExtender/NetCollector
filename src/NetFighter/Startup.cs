@@ -23,45 +23,28 @@ using System.Text.Json;
 
 namespace NetFighter
 {
-    /// <summary>
-    /// Startup
-    /// </summary>
     public class Startup
     {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        /// <summary>
-        /// The application configuration.
-        /// </summary>
         public IConfiguration Configuration { get; }
-
-        /// <summary>
-        /// This method gets called by the runtime. Use this method to add services to the container.
-        /// </summary>
-        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Error() // Log only errors and higher
+                .MinimumLevel.Error()
                 .WriteTo.File(
-                    path: "netf-errors.log", // File path
-                    rollingInterval: RollingInterval.Infinite, // Disable log rotation
-                    fileSizeLimitBytes: 10_000_000, // ~10 MB max size
-                    retainedFileCountLimit: 1, // Keep only 1 file
-                    rollOnFileSizeLimit: true, // Roll when size exceeded (but we retain only 1)
+                    path: "netf-errors.log",
+                    rollingInterval: RollingInterval.Infinite,
+                    fileSizeLimitBytes: 10_000_000,
+                    retainedFileCountLimit: 1,
+                    rollOnFileSizeLimit: true,
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}{NewLine}"
                 )
                 .CreateLogger();
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                // Match the connection string from your manual instance
                 options.UseSqlite($"Data Source=data.db").LogTo(Console.WriteLine, LogLevel.Information); ;
             });
             services
@@ -104,41 +87,11 @@ namespace NetFighter
                         Title = "NetFighter API",
                         Version = "1.0.0",
                     });
-                    //c.CustomSchemaIds(type => type.FriendlyId(true));
-
-                    // Include DataAnnotation attributes on Controller Action parameters as OpenAPI validation rules (e.g required, pattern, ..)
-                    // Use [ValidateModelState] on Actions to actually validate it in C# as well!
                     c.OperationFilter<GeneratePathParamsValidationFilter>();
                 });
                 services
                     .AddSwaggerGenNewtonsoftSupport();
         }
-
-        //static Task CreateInitialUserAsync(UserManager<IdentityUser> userManager,
-        //    IConfiguration config)
-        //{
-        //    // Get user credentials from configuration
-        //    var email = config["InitialUser:Email"]!;
-        //    var password = config["InitialUser:Password"]!;
-
-        //    // Check if user exists
-        //    if (userManager.FindByEmailAsync(email) is null)
-        //    {
-        //        var user = new IdentityUser { UserName = email, Email = email };
-        //        var result = userManager.Create(user, password);
-
-        //        if (!result.Succeeded)
-        //            throw new Exception($"User creation failed: {string.Join(", ", result.Errors)}");
-
-        //        // Optional: Add roles or claims here
-        //    }
-        //}
-
-        /// <summary>
-        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        /// </summary>
-        /// <param name="app"></param>
-        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -168,7 +121,6 @@ namespace NetFighter
                     await Results.Problem().ExecuteAsync(context);
                 });
             });
-            //app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.Use(async (context, next) =>

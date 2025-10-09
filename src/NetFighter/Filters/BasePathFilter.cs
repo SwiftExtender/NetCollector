@@ -15,34 +15,15 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace NetFighter.Filters
 {
-    /// <summary>
-    /// BasePath Document Filter sets BasePath property of OpenAPI and removes it from the individual URL paths
-    /// </summary>
     public class BasePathFilter : IDocumentFilter
     {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="basePath">BasePath to remove from Operations</param>
         public BasePathFilter(string basePath)
         {
             BasePath = basePath;
         }
-
-        /// <summary>
-        /// Gets the BasePath of the OpenAPI Doc
-        /// </summary>
-        /// <returns>The BasePath of the OpenAPI Doc</returns>
         public string BasePath { get; }
-
-        /// <summary>
-        /// Apply the filter
-        /// </summary>
-        /// <param name="openapiDoc">OpenApiDocument</param>
-        /// <param name="context">FilterContext</param>
         public void Apply(OpenApiDocument openapiDoc, DocumentFilterContext context)
         {
-            //openapiDoc.BasePath = BasePath;
 
             var pathsToModify = openapiDoc.Paths.Where(p => p.Key.StartsWith(BasePath)).ToList();
 

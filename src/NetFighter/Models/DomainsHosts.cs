@@ -19,10 +19,7 @@ using Newtonsoft.Json;
 using NetFighter.Converters;
 
 namespace NetFighter.Models
-{ 
-    /// <summary>
-    /// 
-    /// </summary>
+{
     [DataContract]
     public partial class DomainsHosts : IEquatable<DomainsHosts>
     {
@@ -41,10 +38,6 @@ namespace NetFighter.Models
 
         public Domains Domains { get; set; }
         public Hosts Hosts { get; set; }
-        /// <summary>
-        /// Returns the string presentation of the object
-        /// </summary>
-        /// <returns>String presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -54,33 +47,16 @@ namespace NetFighter.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="obj">Object to be compared</param>
-        /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
             return obj.GetType() == GetType() && Equals((DomainsHosts)obj);
         }
-
-        /// <summary>
-        /// Returns true if DomainsHosts instances are equal
-        /// </summary>
-        /// <param name="other">Instance of DomainsHosts to be compared</param>
-        /// <returns>Boolean</returns>
         public bool Equals(DomainsHosts other)
         {
             if (other is null) return false;
@@ -98,17 +74,11 @@ namespace NetFighter.Models
                     HostId.Equals(other.HostId)
                 );
         }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
         public override int GetHashCode()
         {
-            unchecked // Overflow is fine, just wrap
+            unchecked
             {
                 var hashCode = 41;
-                // Suitable nullity checks etc, of course :)
                     
                     hashCode = hashCode * 59 + DomainId.GetHashCode();
                     

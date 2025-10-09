@@ -28,8 +28,6 @@ namespace NetFighter.Services
 
                 if (user == null)
                     return null;
-
-                // Verify password hash
                 var result = _passwordHasher.VerifyHashedPassword(
                     user,
                     user.PasswordHash,
