@@ -14,6 +14,7 @@ using NetFighter.RequestModels;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using NetFighter.Models.ResponseModels;
 
 namespace NetFighter.Controllers
 { 
@@ -40,8 +41,8 @@ namespace NetFighter.Controllers
                 {
                     return BadRequest("Host ID is required");
                 }
-                Hosts deletedHost = new Hosts() { Id = Int32.Parse(id) };
-                _context.Hosts.Remove(deletedHost);
+                var host = await _context.Hosts.FindAsync(id);
+                _context.Hosts.Remove(host);
                 await _context.SaveChangesAsync();
                 return StatusCode(204);
             }
@@ -56,13 +57,39 @@ namespace NetFighter.Controllers
         [Route("/hosts")]
         [ValidateModelState]
         [SwaggerOperation("HostsGet")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<Hosts>), description: "Get all hosts")]
-        public async Task<IActionResult> HostsGet()
+        [SwaggerResponse(statusCode: 200, type: typeof(PagedResponse<Hosts>), description: "Get paginated and filtered hosts")]
+        public async Task<IActionResult> HostsGet([FromQuery] HostsQueryParameters queryParams)
         {
             try
             {
-                var allHosts = await _context.Hosts.ToListAsync();
-                return Ok(allHosts);
+                // Start with base query
+                var query = _context.Hosts.AsQueryable();
+
+                // Apply filters
+                if (!string.IsNullOrEmpty(queryParams.Ip))
+                    query = query.Where(h => h.Ip.Contains(queryParams.Ip));
+
+                // Get total count for pagination metadata
+                var totalCount = await query.CountAsync();
+
+                // Apply pagination
+                var hosts = await query
+                    .OrderBy(h => h.Id)
+                    .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
+                    .Take(queryParams.PageSize)
+                    .ToListAsync();
+
+                // Create response with pagination metadata
+                var response = new PagedResponse<Hosts>
+                {
+                    Data = hosts,
+                    PageNumber = queryParams.PageNumber,
+                    PageSize = queryParams.PageSize,
+                    TotalCount = totalCount,
+                    TotalPages = (int)Math.Ceiling(totalCount / (double)queryParams.PageSize)
+                };
+
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -70,7 +97,6 @@ namespace NetFighter.Controllers
                 return StatusCode(500, new { ex.Message });
             }
         }
-
 
         [HttpGet]
         [Route("/hosts/{id}")]
@@ -93,7 +119,6 @@ namespace NetFighter.Controllers
 
         [HttpPatch]
         [Route("/hosts")]
-        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("HostsPatch")]
         public async Task<IActionResult> HostsPatch([FromBody] UpdatedHost host)
@@ -114,7 +139,6 @@ namespace NetFighter.Controllers
 
         [HttpPost]
         [Route("/hosts")]
-        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("HostsPost")]
         public async Task<IActionResult> HostsPost([FromBody] CreatedHost host)

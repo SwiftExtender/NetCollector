@@ -10,6 +10,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Newtonsoft.Json;
 using NetFighter.Attributes;
 using NetFighter.Models;
+using NetFighter.Data;
 
 namespace NetFighter.Controllers
 {
@@ -17,14 +18,35 @@ namespace NetFighter.Controllers
     [Authorize]
     public class KeywordsApiController : ControllerBase
     {
+        private readonly ApplicationDbContext _context;
+
+        public KeywordsApiController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         [HttpDelete]
-        [Route("/keywords")]
+        [Route("/keywords/{id}")]
         [ValidateModelState]
         [SwaggerOperation("KeywordsDelete")]
-        public async Task<IActionResult> KeywordsDelete([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "source")]string source, [FromQuery (Name = "info")]string info, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> KeywordsDelete([FromQuery (Name = "id")]int id)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest("Keyword ID is required");
+                }
+                var keyword = await _context.Keywords.FindAsync(id);
+                _context.Keywords.Remove(keyword);
+                await _context.SaveChangesAsync();
+                return StatusCode(204);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpGet]
         [Route("/keywords")]
@@ -43,7 +65,6 @@ namespace NetFighter.Controllers
         }
         [HttpPatch]
         [Route("/keywords")]
-        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("KeywordsPatch")]
         public async Task<IActionResult> KeywordsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "source")]string source, [FromQuery (Name = "info")]string info, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Keywords keywords)
@@ -53,7 +74,6 @@ namespace NetFighter.Controllers
         }
         [HttpPost]
         [Route("/keywords")]
-        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("KeywordsPost")]
         public async Task<IActionResult> KeywordsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Keywords keywords)

@@ -43,8 +43,7 @@ namespace NetFighter.Controllers
         }
         [HttpPatch]
         [Route("/subnets")]
-        [Consumes("application/json", "text/csv")]
-        [ValidateModelState]
+                [ValidateModelState]
         [SwaggerOperation("SubnetsPatch")]
         public async Task<IActionResult> SubnetsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "cidr")]string cidr, [FromQuery (Name = "name")]string name, [FromQuery (Name = "description")]string description, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Subnets subnets)
         {
@@ -53,8 +52,7 @@ namespace NetFighter.Controllers
         }
         [HttpPost]
         [Route("/subnets")]
-        [Consumes("application/json", "text/csv")]
-        [ValidateModelState]
+                [ValidateModelState]
         [SwaggerOperation("SubnetsPost")]
         public async Task<IActionResult> SubnetsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Subnets subnets)
         {

@@ -50,7 +50,6 @@ namespace NetFighter.Controllers
         }
         [HttpPatch]
         [Route("/urls")]
-        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("UrlsPatch")]
         public async Task<IActionResult> UrlsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "url")]string url, [FromQuery (Name = "vhost_id")]string vhostId, [FromQuery (Name = "info")]string info, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Urls urls)
@@ -60,7 +59,6 @@ namespace NetFighter.Controllers
         }
         [HttpPost]
         [Route("/urls")]
-        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("UrlsPost")]
         public async Task<IActionResult> UrlsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Urls urls)

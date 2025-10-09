@@ -24,14 +24,29 @@ namespace NetFighter.Controllers
         {
             _context = context;
         }
+
         [HttpDelete]
-        [Route("/params")]
+        [Route("/params/{id}")]
         [ValidateModelState]
         [SwaggerOperation("ParamsDelete")]
-        public async Task<IActionResult> ParamsDelete([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "value")]string value, [FromQuery (Name = "vhost_id")]string vhostId, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> ParamsDelete([FromQuery (Name = "id")]int id)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest("Param ID is required");
+                }
+                var param = await _context.Params.FindAsync(id);
+                _context.Params.Remove(host);
+                await _context.SaveChangesAsync();
+                return StatusCode(204);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpGet]
         [Route("/params")]
@@ -50,7 +65,6 @@ namespace NetFighter.Controllers
         }
         [HttpPatch]
         [Route("/params")]
-        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("ParamsPatch")]
         public async Task<IActionResult> ParamsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "value")]string value, [FromQuery (Name = "vhost_id")]string vhostId, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Params varParams)
@@ -60,7 +74,6 @@ namespace NetFighter.Controllers
         }
         [HttpPost]
         [Route("/params")]
-        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("ParamsPost")]
         public async Task<IActionResult> ParamsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Params varParams)

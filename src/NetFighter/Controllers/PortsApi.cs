@@ -28,15 +28,19 @@ namespace NetFighter.Controllers
             _context = context;
         }
         [HttpDelete]
-        [Route("/ports")]
+        [Route("/ports/{id}")]
         [ValidateModelState]
         [SwaggerOperation("PortsDelete")]
         public async Task<IActionResult> PortsDelete([FromBody] int id)
         {
             try
             {
-                Ports deletedPort = new Ports() { Id = id };
-                _context.Ports.Remove(deletedPort);
+                if (id <= 0)
+                {
+                    return BadRequest("Port ID is required");
+                }
+                var host = await _context.Hosts.FindAsync(id);
+                _context.Hosts.Remove(host);
                 await _context.SaveChangesAsync();
                 return StatusCode(204);
             }
@@ -104,7 +108,6 @@ namespace NetFighter.Controllers
         }
         [HttpPatch]
         [Route("/ports")]
-        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("PatchPorts")]
         public async Task<IActionResult> PortsPatch([FromBody] UpdatedPort port)
@@ -124,7 +127,6 @@ namespace NetFighter.Controllers
         }
         [HttpPost]
         [Route("/ports")]
-        [Consumes("application/json", "text/csv")]
         [ValidateModelState]
         [SwaggerOperation("AddPorts")]
         public async Task<IActionResult> PortsPost([FromBody] CreatedPort port)

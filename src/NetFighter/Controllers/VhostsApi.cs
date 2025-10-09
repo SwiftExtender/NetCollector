@@ -50,8 +50,7 @@ namespace NetFighter.Controllers
         }
         [HttpPatch]
         [Route("/vhosts")]
-        [Consumes("application/json", "text/csv")]
-        [ValidateModelState]
+                [ValidateModelState]
         [SwaggerOperation("VhostsPatch")]
         public async Task<IActionResult> VhostsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "info")]string info, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Vhosts vhosts)
         {
@@ -60,8 +59,7 @@ namespace NetFighter.Controllers
         }
         [HttpPost]
         [Route("/vhosts")]
-        [Consumes("application/json", "text/csv")]
-        [ValidateModelState]
+                [ValidateModelState]
         [SwaggerOperation("VhostsPost")]
         public async Task<IActionResult> VhostsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Vhosts vhosts)
         {
