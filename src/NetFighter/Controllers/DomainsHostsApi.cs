@@ -27,24 +27,29 @@ namespace NetFighter.Controllers
         {
             _context = context;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="domainId"></param>
-        /// <param name="hostId"></param>
-        /// <param name="prefer">Preference</param>
-        /// <response code="204">No Content</response>
+
         [HttpDelete]
-        [Route("/domains_hosts")]
+        [Route("/domains_hosts/{id}")]
         [ValidateModelState]
         [SwaggerOperation("DomainsHostsDelete")]
-        public async Task<IActionResult> DomainsHostsDelete([FromQuery (Name = "domain_id")]string domainId, [FromQuery (Name = "host_id")]string hostId, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> DomainsHostsDelete([FromQuery (Name = "id")]string id)
         {
-
-            //TODO: Uncomment the next line to return response 204 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(204);
-
-            throw new NotImplementedException();
+            try
+            {
+                if (string.IsNullOrEmpty(id))
+                {
+                    return BadRequest("DomainsHosts ID is required");
+                }
+                var domain = await _context.DomainsHosts.FindAsync(id);
+                _context.DomainsHosts.Remove(domain);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
 
         /// <summary>

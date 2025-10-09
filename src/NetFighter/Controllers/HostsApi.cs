@@ -17,9 +17,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace NetFighter.Controllers
 { 
-    /// <summary>
-    /// 
-    /// </summary>
     [ApiController]
     [Authorize]
     public class HostsApiController : ControllerBase
@@ -30,23 +27,19 @@ namespace NetFighter.Controllers
         {
             _context = context;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="ip"></param>
-        /// <param name="info"></param>
-        /// <param name="subnetId"></param>
-        /// <param name="prefer">Preference</param>
-        /// <response code="204">No Content</response>
+
         [HttpDelete]
-        [Route("/hosts")]
+        [Route("/hosts/{id}")]
         [ValidateModelState]
         [SwaggerOperation("HostsDelete")]
         public async Task<IActionResult> HostsDelete([FromBody] string id)
         {
             try
             {
+                if (string.IsNullOrEmpty(id))
+                {
+                    return BadRequest("Host ID is required");
+                }
                 Hosts deletedHost = new Hosts() { Id = Int32.Parse(id) };
                 _context.Hosts.Remove(deletedHost);
                 await _context.SaveChangesAsync();
@@ -59,22 +52,6 @@ namespace NetFighter.Controllers
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="ip"></param>
-        /// <param name="info"></param>
-        /// <param name="subnetId"></param>
-        /// <param name="select">Filtering Columns</param>
-        /// <param name="order">Ordering</param>
-        /// <param name="range">Limiting and Pagination</param>
-        /// <param name="rangeUnit">Limiting and Pagination</param>
-        /// <param name="offset">Limiting and Pagination</param>
-        /// <param name="limit">Limiting and Pagination</param>
-        /// <param name="prefer">Preference</param>
-        /// <response code="200">OK</response>
-        /// <response code="206">Partial Content</response>
         [HttpGet]
         [Route("/hosts")]
         [ValidateModelState]
@@ -113,16 +90,7 @@ namespace NetFighter.Controllers
                 return StatusCode(500, new { ex.Message });
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="ip"></param>
-        /// <param name="info"></param>
-        /// <param name="subnetId"></param>
-        /// <param name="prefer">Preference</param>
-        /// <param name="hosts">hosts</param>
-        /// <response code="204">No Content</response>
+
         [HttpPatch]
         [Route("/hosts")]
         [Consumes("application/json", "text/csv")]
@@ -144,12 +112,6 @@ namespace NetFighter.Controllers
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="select">Filtering Columns</param>
-        /// <param name="hosts">hosts</param>
-        /// <response code="201">Created</response>
         [HttpPost]
         [Route("/hosts")]
         [Consumes("application/json", "text/csv")]

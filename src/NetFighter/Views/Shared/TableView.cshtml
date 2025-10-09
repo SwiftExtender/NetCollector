@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetFighter Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <p>User: @ViewData["Username"]</p>
+        <div class="app-container">
+            <header class="app-header">
+                <h1>NetFighter</h1>
+                <nav class="main-nav">
+                    <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+                    <button class="nav-btn" data-view="hosts">Hosts</button>
+                    <button class="nav-btn" data-view="domains">Domains</button>
+                    <button class="nav-btn" data-view="ports">Ports</button>
+                    <button class="nav-btn" data-view="tools">Tools</button>
+                    <button class="nav-btn" data-view="subnets">Subnets</button>
+                    <button class="logout-btn" id="logoutBtn" action="">Logout</button>
+                </nav>
+            </header>
+            <main class="app-main">
+                <div id="content"></div>
+            </main>
+        </div>
+
+    <script src="/js/netfighter-api.js"></script>
+    <script src="/js/ui-components.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>

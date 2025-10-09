@@ -1,19 +1,21 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using NetFighter.RequestModels;
+using NetFighter.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using NetFighter.RequestModels;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
-using NetFighter.Services;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace NetFighter.Controllers
 {
-    [ApiController]
+    [Controller]
     public class AuthApi : Controller
     {
         private readonly IAuthService _authService;
@@ -24,24 +26,22 @@ namespace NetFighter.Controllers
         }
 
         [HttpGet]
-        [Route("/Login")]
+        [Route("/")]
         public IActionResult Login() => View();
 
         [HttpPost]
-        [Route("/Login")]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> LoginUser(AuthModel login)
+        [Route("Login")]
+        //[Consumes("application/x-www-form-urlencoded")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login([FromForm] string username, [FromForm] string password)
         {
-            if (!ModelState.IsValid)
-                return View(login);
-
             // Authenticate user
-            var user = await _authService.Authenticate(login.UserName, login.Password);
+            var user = await _authService.Authenticate(username, password);
 
             if (user == null)
             {
                 ModelState.AddModelError("", "Invalid username or password");
-                return View(login);
+                return Redirect("/");
             }
 
             // Create claims identity
@@ -60,24 +60,24 @@ namespace NetFighter.Controllers
                 principal,
                 new AuthenticationProperties
                 {
-                    IsPersistent = login.RememberMe,
+                    //IsPersistent = login.RememberMe,
                     ExpiresUtc = DateTime.UtcNow.AddDays(7)
                 });
 
-            return new EmptyResult();
+            return RedirectToAction("Dashboard");
         }
         [HttpGet]
-        [Route("/Dashboard")]
+        [Route("Dashboard")]
         [Authorize]
         public async Task<IActionResult> Dashboard() => View();
 
         [HttpPost]
-        [Route("/Logout")]
+        [Route("Logout")]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login");
+            return Redirect("/");
         }
 
     }

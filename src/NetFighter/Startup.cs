@@ -1,24 +1,25 @@
-using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
+using NetFighter.Data;
 using NetFighter.Filters;
 using NetFighter.Formatters;
-using Microsoft.AspNetCore.Http;
-using NetFighter.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
 using NetFighter.Models;
 using NetFighter.Services;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using Serilog;
-using Microsoft.AspNetCore.Diagnostics;
+using System;
+using System.Text.Json;
 
 namespace NetFighter
 {
@@ -63,10 +64,13 @@ namespace NetFighter
                 // Match the connection string from your manual instance
                 options.UseSqlite($"Data Source=data.db").LogTo(Console.WriteLine, LogLevel.Information); ;
             });
-            //services.AddDbContext<ApplicationDbContext>();
             services
                 .AddControllersWithViews(options => {
                     options.InputFormatters.Insert(0, new InputFormatterStream());
+                }).AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                    options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
                 })
                 .AddRazorRuntimeCompilation()
                 .AddNewtonsoftJson(opts =>
@@ -83,15 +87,13 @@ namespace NetFighter
             .AddCookie(options =>
                 {
                     options.Cookie.Name = "Auth";
-                    //options.Cookie.Domain = "localhost";
-                    options.LoginPath = "/Login";
+                    options.LoginPath = "/";
                     options.AccessDeniedPath = "/Error";
                     options.Cookie.HttpOnly = true;
                     options.SlidingExpiration = true;
                     options.ExpireTimeSpan = TimeSpan.FromDays(7);
                     options.Cookie.SameSite = SameSiteMode.Strict;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-                    //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 });
 
             services
@@ -169,6 +171,13 @@ namespace NetFighter
             //app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+                context.Response.Headers["Pragma"] = "no-cache";
+                context.Response.Headers["Expires"] = "0";
+                await next();
+            });
             app.UseSwagger(c =>
                 {
                     c.RouteTemplate = "openapi/{documentName}/openapi.json";
