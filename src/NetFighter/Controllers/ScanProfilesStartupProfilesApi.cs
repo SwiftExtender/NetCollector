@@ -1,16 +1,17 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using NetFighter.Attributes;
+using NetFighter.Data;
+using NetFighter.Models;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Newtonsoft.Json;
-using NetFighter.Attributes;
-using NetFighter.Models;
-using NetFighter.Data;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace NetFighter.Controllers
 {
@@ -61,10 +62,23 @@ namespace NetFighter.Controllers
         [Route("/scan_profiles_startup_profiles")]
         [ValidateModelState]
         [SwaggerOperation("ScanProfilesStartupProfilesPost")]
-        public async Task<IActionResult> ScanProfilesStartupProfilesPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody] ScanProfilesToolProfiles scanProfilesStartupProfiles)
+        public async Task<IActionResult> ScanProfilesStartupProfilesPost([FromBody] ScanProfilesToolProfiles scanProfilesStartupProfiles)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                _context.ScanProfilesToolProfiles.Add(new ScanProfilesToolProfiles() {
+                    StartupProfileId = scanProfilesStartupProfiles.StartupProfileId, 
+                    ScanProfileId = scanProfilesStartupProfiles.ScanProfileId, 
+                    Order = scanProfilesStartupProfiles.Order                
+                });
+                await _context.SaveChangesAsync();
+                return StatusCode(201);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
     }
 }

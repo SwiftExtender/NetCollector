@@ -34,7 +34,6 @@ namespace NetFighter.Models
         public string Name { get; set; }
         [DataMember(Name="description", EmitDefaultValue=false)]
         public string Description { get; set; }
-
         public ICollection<Hosts> Hosts { get; }
         public override string ToString()
         {

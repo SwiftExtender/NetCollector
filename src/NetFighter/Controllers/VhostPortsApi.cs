@@ -1,16 +1,17 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using NetFighter.Attributes;
+using NetFighter.Data;
+using NetFighter.Models;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Newtonsoft.Json;
-using NetFighter.Attributes;
-using NetFighter.Models;
-using NetFighter.Data;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace NetFighter.Controllers
 {
@@ -50,7 +51,7 @@ namespace NetFighter.Controllers
         }
         [HttpPatch]
         [Route("/vhost_ports")]
-                [ValidateModelState]
+        [ValidateModelState]
         [SwaggerOperation("VhostPortsPatch")]
         public async Task<IActionResult> VhostPortsPatch([FromQuery (Name = "vhost_id")]string vhostId, [FromQuery (Name = "port_id")]string portId, [FromHeader (Name = "Prefer")]string prefer, [FromBody]VhostsPorts vhostPorts)
         {
@@ -59,12 +60,26 @@ namespace NetFighter.Controllers
         }
         [HttpPost]
         [Route("/vhost_ports")]
-                [ValidateModelState]
+        [ValidateModelState]
         [SwaggerOperation("VhostPortsPost")]
-        public async Task<IActionResult> VhostPortsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]VhostsPorts vhostPorts)
+        public async Task<IActionResult> VhostPortsPost([FromBody]VhostsPorts vhostPorts)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                _context.VhostsPorts.Add(new VhostsPorts() { 
+                    PortId = vhostPorts.PortId, 
+                    VhostId = vhostPorts.VhostId, 
+                    //Ports = vhostPorts.Ports,
+                    //Vhosts = vhostPorts.Vhosts
+                });
+                await _context.SaveChangesAsync();
+                return StatusCode(201);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
     }
 }

@@ -1,16 +1,17 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using NetFighter.Attributes;
+using NetFighter.Data;
+using NetFighter.Models;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Newtonsoft.Json;
-using NetFighter.Attributes;
-using NetFighter.Models;
-using NetFighter.Data;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace NetFighter.Controllers
 { 
@@ -61,10 +62,27 @@ namespace NetFighter.Controllers
         [Route("/requests")]
         [ValidateModelState]
         [SwaggerOperation("RequestsPost")]
-        public async Task<IActionResult> RequestsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Requests requests)
+        public async Task<IActionResult> RequestsPost([FromBody]Requests requests)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                _context.Requests.Add(new Requests() { 
+                    Info = requests.Info, Method = requests.Method, Status = requests.Status,
+                    RawRequest = requests.RawRequest, Response = requests.Response, UrlId = requests.UrlId
+                });
+                await _context.SaveChangesAsync();
+                return StatusCode(201);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
     }
 }

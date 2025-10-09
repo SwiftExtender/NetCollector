@@ -1,16 +1,17 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using NetFighter.Attributes;
+using NetFighter.Data;
+using NetFighter.Models;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Newtonsoft.Json;
-using NetFighter.Attributes;
-using NetFighter.Models;
-using NetFighter.Data;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace NetFighter.Controllers
 {
@@ -25,10 +26,10 @@ namespace NetFighter.Controllers
             _context = context;
         }
         [HttpDelete]
-        [Route("/vhosts")]
+        [Route("/vhosts/{id}")]
         [ValidateModelState]
         [SwaggerOperation("VhostsDelete")]
-        public async Task<IActionResult> VhostsDelete([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "info")]string info, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> VhostsDelete([From] Vhosts vhosts)
         {
 
             throw new NotImplementedException();
@@ -50,7 +51,7 @@ namespace NetFighter.Controllers
         }
         [HttpPatch]
         [Route("/vhosts")]
-                [ValidateModelState]
+        [ValidateModelState]
         [SwaggerOperation("VhostsPatch")]
         public async Task<IActionResult> VhostsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "info")]string info, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Vhosts vhosts)
         {
@@ -59,12 +60,24 @@ namespace NetFighter.Controllers
         }
         [HttpPost]
         [Route("/vhosts")]
-                [ValidateModelState]
+        [ValidateModelState]
         [SwaggerOperation("VhostsPost")]
-        public async Task<IActionResult> VhostsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Vhosts vhosts)
+        public async Task<IActionResult> VhostsPost([FromBody]Vhosts vhosts)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                _context.Vhosts.Add(new Vhosts() { 
+                    Info = vhosts.Info, Name = vhosts.Name//, Params = vhosts.Params,
+                    //Urls = vhosts.Urls, VhostPorts = vhosts.VhostPorts
+                });
+                await _context.SaveChangesAsync();
+                return StatusCode(201);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
     }
 }

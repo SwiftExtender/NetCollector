@@ -33,7 +33,7 @@ namespace NetFighter.Models
         [DataMember(Name="description", EmitDefaultValue=false)]
         public string Description { get; set; }
         [DataMember(Name="created_at", EmitDefaultValue=false)]
-        public string CreatedAt { get; set; } = "CURRENT_TIMESTAMP";
+        public DateTime CreatedAt { get; set; }
         public override string ToString()
         {
             var sb = new StringBuilder();

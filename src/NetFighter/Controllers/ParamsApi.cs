@@ -1,16 +1,17 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using NetFighter.Attributes;
+using NetFighter.Data;
+using NetFighter.Models;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Newtonsoft.Json;
-using NetFighter.Attributes;
-using NetFighter.Models;
-using NetFighter.Data;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace NetFighter.Controllers
 {
@@ -38,7 +39,7 @@ namespace NetFighter.Controllers
                     return BadRequest("Param ID is required");
                 }
                 var param = await _context.Params.FindAsync(id);
-                _context.Params.Remove(host);
+                _context.Params.Remove(param);
                 await _context.SaveChangesAsync();
                 return StatusCode(204);
             }
@@ -76,10 +77,22 @@ namespace NetFighter.Controllers
         [Route("/params")]
         [ValidateModelState]
         [SwaggerOperation("ParamsPost")]
-        public async Task<IActionResult> ParamsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Params varParams)
+        public async Task<IActionResult> ParamsPost([FromBody]Params param)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                _context.Params.Add(new Params() { 
+                    Name = param.Name,
+                    Value = param.Value
+                });
+                await _context.SaveChangesAsync();
+                return StatusCode(201);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
     }
 }

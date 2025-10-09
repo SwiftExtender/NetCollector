@@ -1,16 +1,16 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using NetFighter.Attributes;
+using NetFighter.Data;
+using NetFighter.Models;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Newtonsoft.Json;
-using NetFighter.Attributes;
-using NetFighter.Models;
-using NetFighter.Data;
 
 namespace NetFighter.Controllers
 {
@@ -19,7 +19,6 @@ namespace NetFighter.Controllers
     public class KeywordsApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
         public KeywordsApiController(ApplicationDbContext context)
         {
             _context = context;
@@ -76,10 +75,19 @@ namespace NetFighter.Controllers
         [Route("/keywords")]
         [ValidateModelState]
         [SwaggerOperation("KeywordsPost")]
-        public async Task<IActionResult> KeywordsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Keywords keywords)
+        public async Task<IActionResult> KeywordsPost([FromBody]Keywords keywords)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                _context.Keywords.Add(new Keywords() { Info = keywords.Info, Name = keywords.Name, Source = keywords.Source, SourceType = keywords.SourceType });
+                await _context.SaveChangesAsync();
+                return StatusCode(201);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
     }
 }

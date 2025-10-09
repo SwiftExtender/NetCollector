@@ -37,9 +37,9 @@ namespace NetFighter.Models
         [DataMember(Name="configuration", EmitDefaultValue=false)]
         public string VarConfiguration { get; set; }
         [DataMember(Name="created_at", EmitDefaultValue=false)]
-        public string CreatedAt { get; set; } = "now()";
+        public DateTime CreatedAt { get; set; }
         [DataMember(Name="updated_at", EmitDefaultValue=false)]
-        public string UpdatedAt { get; set; } = "now()";
+        public DateTime UpdatedAt { get; set; }
         public override string ToString()
         {
             var sb = new StringBuilder();

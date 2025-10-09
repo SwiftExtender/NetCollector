@@ -1,16 +1,17 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using NetFighter.Attributes;
+using NetFighter.Data;
+using NetFighter.Models;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Newtonsoft.Json;
-using NetFighter.Attributes;
-using NetFighter.Models;
-using NetFighter.Data;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace NetFighter.Controllers
 {
@@ -50,7 +51,7 @@ namespace NetFighter.Controllers
         }
         [HttpPatch]
         [Route("/scan_profiles")]
-                [ValidateModelState]
+        [ValidateModelState]
         [SwaggerOperation("ScanProfilesPatch")]
         public async Task<IActionResult> ScanProfilesPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "description")]string description, [FromQuery (Name = "created_at")]string createdAt, [FromHeader (Name = "Prefer")]string prefer, [FromBody]ScanProfiles scanProfiles)
         {
@@ -59,12 +60,25 @@ namespace NetFighter.Controllers
         }
         [HttpPost]
         [Route("/scan_profiles")]
-                [ValidateModelState]
+        [ValidateModelState]
         [SwaggerOperation("ScanProfilesPost")]
-        public async Task<IActionResult> ScanProfilesPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]ScanProfiles scanProfiles)
+        public async Task<IActionResult> ([FromBody]ScanProfiles scanProfiles)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                _context.ScanProfiles.Add(new ScanProfiles() { 
+                    Description = scanProfiles.Description,
+                    Name = scanProfiles.Name, 
+                    CreatedAt = DateTime.UtcNow
+                });
+                await _context.SaveChangesAsync();
+                return StatusCode(201);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
     }
 }

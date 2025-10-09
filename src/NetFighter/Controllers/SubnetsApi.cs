@@ -1,15 +1,18 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NetFighter.Attributes;
+using NetFighter.Data;
+using NetFighter.Models;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Newtonsoft.Json;
-using NetFighter.Attributes;
-using NetFighter.Models;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace NetFighter.Controllers
 {
@@ -17,6 +20,12 @@ namespace NetFighter.Controllers
     [Authorize]
     public class SubnetsApiController : ControllerBase
     {
+        private readonly ApplicationDbContext _context;
+        public SubnetsApiController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         [HttpDelete]
         [Route("/subnets")]
         [ValidateModelState]
@@ -43,7 +52,7 @@ namespace NetFighter.Controllers
         }
         [HttpPatch]
         [Route("/subnets")]
-                [ValidateModelState]
+        [ValidateModelState]
         [SwaggerOperation("SubnetsPatch")]
         public async Task<IActionResult> SubnetsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "cidr")]string cidr, [FromQuery (Name = "name")]string name, [FromQuery (Name = "description")]string description, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Subnets subnets)
         {
@@ -52,12 +61,26 @@ namespace NetFighter.Controllers
         }
         [HttpPost]
         [Route("/subnets")]
-                [ValidateModelState]
+        [ValidateModelState]
         [SwaggerOperation("SubnetsPost")]
-        public async Task<IActionResult> SubnetsPost([FromQuery (Name = "select")]string select, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Subnets subnets)
+        public async Task<IActionResult> SubnetsPost([FromBody]Subnets subnets)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                _context.Subnets.Add(new Subnets() { 
+                    Name = subnets.Name,
+                    //Hosts = subnets.Hosts,
+                    Description = subnets.Description,
+                    Cidr = subnets.Cidr
+                });
+                await _context.SaveChangesAsync();
+                return StatusCode(201);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
     }
 }
