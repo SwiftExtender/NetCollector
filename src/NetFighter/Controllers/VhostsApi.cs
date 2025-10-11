@@ -98,10 +98,33 @@ namespace NetFighter.Controllers
         [Route("/vhosts")]
         [ValidateModelState]
         [SwaggerOperation("VhostsPatch")]
-        public async Task<IActionResult> VhostsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "info")]string info, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Vhosts vhosts)
+        public async Task<IActionResult> VhostsPatch([FromBody]Vhosts vhost)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (vhost.Id <= 0)
+                {
+                    return BadRequest("Vhost ID is required");
+                }
+                var existingvhost = await _context.Vhosts.FindAsync(vhost.Id);
+                if (existingvhost == null)
+                {
+                    return NotFound($"Vhost with ID {vhost.Id} not found");
+                }
+                existingvhost.Name = vhost.Name;
+                existingvhost.Info = vhost.Info;
+                existingvhost.Params = vhost.Params;
+                existingvhost.Urls = vhost.Urls;
+                existingvhost.VhostPorts = vhost.VhostPorts;
+                existingvhost.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPost]
         [Route("/vhosts")]

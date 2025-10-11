@@ -99,10 +99,32 @@ namespace NetFighter.Controllers
         [Route("/vhost_ports")]
         [ValidateModelState]
         [SwaggerOperation("VhostPortsPatch")]
-        public async Task<IActionResult> VhostPortsPatch([FromQuery (Name = "vhost_id")]string vhostId, [FromQuery (Name = "port_id")]string portId, [FromHeader (Name = "Prefer")]string prefer, [FromBody]VhostsPorts vhostPorts)
+        public async Task<IActionResult> VhostPortsPatch([FromBody]VhostsPorts vhostPort)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (vhostPort.Id <= 0)
+                {
+                    return BadRequest("ToolProfile ID is required");
+                }
+                var existingvhostPort = await _context.VhostsPorts.FindAsync(vhostPort.Id);
+                if (existingvhostPort == null)
+                {
+                    return NotFound($"ToolProfile with ID {vhostPort.Id} not found");
+                }
+                existingvhostPort.PortId = vhostPort.PortId;
+                existingvhostPort.Ports = vhostPort.Ports;
+                existingvhostPort.VhostId = vhostPort.VhostId;
+                existingvhostPort.Vhosts = vhostPort.Vhosts;
+                existingvhostPort.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPost]
         [Route("/vhost_ports")]
@@ -115,8 +137,8 @@ namespace NetFighter.Controllers
                 _context.VhostsPorts.Add(new VhostsPorts() { 
                     PortId = vhostPorts.PortId, 
                     VhostId = vhostPorts.VhostId, 
-                    //Ports = vhostPorts.Ports,
-                    //Vhosts = vhostPorts.Vhosts
+                    Ports = vhostPorts.Ports,
+                    Vhosts = vhostPorts.Vhosts
                 });
                 await _context.SaveChangesAsync();
                 return StatusCode(201);

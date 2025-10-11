@@ -100,10 +100,32 @@ namespace NetFighter.Controllers
         [Route("/tools")]
         [ValidateModelState]
         [SwaggerOperation("ToolsPatch")]
-        public async Task<IActionResult> ToolsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "description")]string description, [FromQuery (Name = "version")]string version, [FromQuery (Name = "created_at")]string createdAt, [FromQuery (Name = "updated_at")]string updatedAt, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Tools tools)
+        public async Task<IActionResult> ToolsPatch([FromBody]Tools tool)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (tool.Id <= 0)
+                {
+                    return BadRequest("ToolProfile ID is required");
+                }
+                var existingtool= await _context.Tools.FindAsync(tool.Id);
+                if (existingtool == null)
+                {
+                    return NotFound($"ToolProfile with ID {tool.Id} not found");
+                }
+                existingtool.Name = tool.Name;
+                existingtool.Description = tool.Description;
+                existingtool.VarVersion = tool.VarVersion;
+               
+                existingtool.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPost]
         [Route("/tools")]

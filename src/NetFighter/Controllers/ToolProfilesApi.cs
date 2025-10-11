@@ -71,10 +71,31 @@ namespace NetFighter.Controllers
         [Route("/tool_profiles")]
         [ValidateModelState]
         [SwaggerOperation("ToolProfilesPatch")]
-        public async Task<IActionResult> StartupProfilesPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "tool_id")]string toolId, [FromQuery (Name = "name")]string name, [FromQuery (Name = "configuration")]string configuration, [FromQuery (Name = "created_at")]string createdAt, [FromQuery (Name = "updated_at")]string updatedAt, [FromHeader (Name = "Prefer")]string prefer, [FromBody]ToolProfiles startupProfiles)
+        public async Task<IActionResult> StartupProfilesPatch([FromBody]ToolProfiles toolProfile)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (toolProfile.Id <= 0)
+                {
+                    return BadRequest("ToolProfile ID is required");
+                }
+                var existingtoolProfile = await _context.ToolProfiles.FindAsync(toolProfile.Id);
+                if (existingtoolProfile == null)
+                {
+                    return NotFound($"ToolProfile with ID {toolProfile.Id} not found");
+                }
+                existingtoolProfile.Name = toolProfile.Name;
+                existingtoolProfile.ToolId = toolProfile.ToolId;
+                existingtoolProfile.VarConfiguration = toolProfile.VarConfiguration;
+                existingtoolProfile.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPost]
         [Route("/tool_profiles")]

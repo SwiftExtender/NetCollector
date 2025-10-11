@@ -100,10 +100,32 @@ namespace NetFighter.Controllers
         [Route("/urls")]
         [ValidateModelState]
         [SwaggerOperation("UrlsPatch")]
-        public async Task<IActionResult> UrlsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "url")]string url, [FromQuery (Name = "vhost_id")]string vhostId, [FromQuery (Name = "info")]string info, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Urls urls)
+        public async Task<IActionResult> UrlsPatch([FromBody]Urls url)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (url.Id <= 0)
+                {
+                    return BadRequest("Url ID is required");
+                }
+                var existingurl = await _context.Urls.FindAsync(url.Id);
+                if (existingurl == null)
+                {
+                    return NotFound($"Url with ID {url.Id} not found");
+                }
+                existingurl.Info = url.Info;
+                existingurl.Requests = url.Requests;
+                existingurl.Url = url.Url;
+                existingurl.VhostId = url.VhostId;
+                existingurl.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPost]
         [Route("/urls")]
