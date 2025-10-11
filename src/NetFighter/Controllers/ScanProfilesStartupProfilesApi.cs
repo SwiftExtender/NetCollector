@@ -30,20 +30,38 @@ namespace NetFighter.Controllers
             _context = context;
         }
         [HttpDelete]
-        [Route("/scan_profiles_startup_profiles/{id}")]
+        [Route("/scan_profiles_tool_profiles/{id}")]
         [ValidateModelState]
         [SwaggerOperation("ScanProfilesStartupProfilesDelete")]
-        public async Task<IActionResult> ScanProfilesStartupProfilesDelete(int id)
+        public async Task<IActionResult> ScanProfilesToolProfilesDelete(int id)
         {
-
-            throw new NotImplementedException();
+                try
+                {
+                    if (id <= 0)
+                    {
+                        return BadRequest("ScanProfilesToolProfiles ID is required");
+                    }
+                    var scanProfilesToolProfiles = await _context.ScanProfilesToolProfiles.FindAsync(id);
+                    if (scanProfilesToolProfiles == null)
+                    {
+                        return NotFound($"ScanProfilesToolProfiles with ID {id} not found");
+                    }
+                    _context.ScanProfilesToolProfiles.Remove(scanProfilesToolProfiles);
+                    await _context.SaveChangesAsync();
+                    return NoContent();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return StatusCode(500, new { ex.Message });
+                }
         }
         [HttpGet]
-        [Route("/scan_profiles_startup_profiles")]
+        [Route("/scan_profiles_tool_profiles")]
         [ValidateModelState]
-        [SwaggerOperation("ScanProfilesStartupProfilesGet")]
+        [SwaggerOperation("ScanProfilesToolProfilesGet")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<ScanProfilesToolProfiles>), description: "OK")]
-        public async Task<IActionResult> ScanProfilesStartupProfilesGet([FromQuery] PaginationRequestModels queryParams)
+        public async Task<IActionResult> ScanProfilesToolProfilesGet([FromQuery] PaginationRequestModels queryParams)
         {
             try
             {
@@ -79,19 +97,40 @@ namespace NetFighter.Controllers
             }
         }
         [HttpPatch]
-        [Route("/scan_profiles_startup_profiles")]
+        [Route("/scan_profiles_tool_profiles")]
         [ValidateModelState]
-        [SwaggerOperation("ScanProfilesStartupProfilesPatch")]
-        public async Task<IActionResult> ScanProfilesStartupProfilesPatch([FromQuery (Name = "scan_profile_id")]string scanProfileId, [FromQuery (Name = "startup_profile_id")]string startupProfileId, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Prefer")]string prefer, [FromBody] ScanProfilesToolProfiles scanProfilesStartupProfiles)
+        [SwaggerOperation("ScanProfilesToolProfilesPatch")]
+        public async Task<IActionResult> ScanProfilesToolProfilesPatch([FromBody] ScanProfilesToolProfiles scanProfilesStartupProfile)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (scanProfilesStartupProfile.Id <= 0)
+                {
+                    return BadRequest("ScanProfilesToolProfile ID is required");
+                }
+                var existingscanProfilesStartupProfile = await _context.ScanProfilesToolProfiles.FindAsync(scanProfilesStartupProfile.Id);
+                if (existingscanProfilesStartupProfile == null)
+                {
+                    return NotFound($"ScanProfilesToolProfile with ID {scanProfilesStartupProfile.Id} not found");
+                }
+                existingscanProfilesStartupProfile.Order = scanProfilesStartupProfile.Order;
+                existingscanProfilesStartupProfile.ScanProfileId = scanProfilesStartupProfile.ScanProfileId;
+                existingscanProfilesStartupProfile.StartupProfileId = scanProfilesStartupProfile.StartupProfileId;
+                existingscanProfilesStartupProfile.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPost]
-        [Route("/scan_profiles_startup_profiles")]
+        [Route("/scan_profiles_tool_profiles")]
         [ValidateModelState]
-        [SwaggerOperation("ScanProfilesStartupProfilesPost")]
-        public async Task<IActionResult> ScanProfilesStartupProfilesPost([FromBody] ScanProfilesToolProfiles scanProfilesStartupProfiles)
+        [SwaggerOperation("ScanProfilesToolProfilesPost")]
+        public async Task<IActionResult> ScanProfilesToolProfilesPost([FromBody] ScanProfilesToolProfiles scanProfilesStartupProfiles)
         {
             try
             {

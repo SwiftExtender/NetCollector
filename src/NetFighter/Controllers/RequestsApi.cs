@@ -36,7 +36,28 @@ namespace NetFighter.Controllers
         public async Task<IActionResult> RequestsDelete(int id)
         {
 
-            throw new NotImplementedException();
+            {
+                try
+                {
+                    if (id <= 0)
+                    {
+                        return BadRequest("Request ID is required");
+                    }
+                    var existingrequest = await _context.Requests.FindAsync(id);
+                    if (existingrequest == null)
+                    {
+                        return NotFound($"Request with ID {id} not found");
+                    }
+                    _context.Requests.Remove(existingrequest);
+                    await _context.SaveChangesAsync();
+                    return NoContent();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return StatusCode(500, new { ex.Message });
+                }
+            }
         }
         [HttpGet]
         [Route("/requests")]
@@ -82,10 +103,33 @@ namespace NetFighter.Controllers
         [Route("/requests")]
         [ValidateModelState]
         [SwaggerOperation("RequestsPatch")]
-        public async Task<IActionResult> RequestsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "url_id")]string urlId, [FromQuery (Name = "created_at")]string createdAt, [FromQuery (Name = "method")]string method, [FromQuery (Name = "status")]string status, [FromQuery (Name = "response")]string response, [FromQuery (Name = "info")]string info, [FromQuery (Name = "raw_request")]string rawRequest, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Requests requests)
+        public async Task<IActionResult> RequestsPatch([FromBody]Requests request)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (request.Id <= 0)
+                {
+                    return BadRequest("Request ID is required");
+                }
+                var existingrequest = await _context.Requests.FindAsync(request.Id);
+                if (existingrequest == null)
+                {
+                    return NotFound($"Request with ID {request.Id} not found");
+                }
+                existingrequest.Info = request.Info;
+                existingrequest.Method = request.Method;
+                existingrequest.RawRequest = request.RawRequest;
+                existingrequest.Response = request.Response;
+                existingrequest.Status = request.Status;
+                existingrequest.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPost]
         [Route("/requests")]

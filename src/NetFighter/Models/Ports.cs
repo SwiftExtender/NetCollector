@@ -32,7 +32,7 @@ namespace NetFighter.Models
         public DateTime CreatedAt { get; set; }
         [DataMember(Name = "updated_at", EmitDefaultValue = false)]
         public DateTime UpdatedAt { get; set; }
-        public ICollection<VhostsPorts>? VhostPorts { get; }
+        public ICollection<VhostsPorts>? VhostPorts { get; set; }
         public override string ToString()
         {
             var sb = new StringBuilder();

@@ -35,8 +35,26 @@ namespace NetFighter.Controllers
         [SwaggerOperation("SubnetsDelete")]
         public async Task<IActionResult> SubnetsDelete(int id)
         {
-
-            throw new NotImplementedException();
+                try
+                {
+                    if (id <= 0)
+                    {
+                        return BadRequest("Subnet ID is required");
+                    }
+                    var existingsubnet = await _context.Subnets.FindAsync(id);
+                    if (existingsubnet == null)
+                    {
+                        return NotFound($"Subnet with ID {id} not found");
+                    }
+                    _context.Subnets.Remove(existingsubnet);
+                    await _context.SaveChangesAsync();
+                    return NoContent();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return StatusCode(500, new { ex.Message });
+                }
         }
         [HttpGet]
         [Route("/subnets")]
@@ -81,10 +99,32 @@ namespace NetFighter.Controllers
         [Route("/subnets")]
         [ValidateModelState]
         [SwaggerOperation("SubnetsPatch")]
-        public async Task<IActionResult> SubnetsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "cidr")]string cidr, [FromQuery (Name = "name")]string name, [FromQuery (Name = "description")]string description, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Subnets subnets)
+        public async Task<IActionResult> SubnetsPatch([FromBody]Subnets subnet)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (subnet.Id <= 0)
+                {
+                    return BadRequest("Subnet ID is required");
+                }
+                var existingsubnet = await _context.Subnets.FindAsync(subnet.Id);
+                if (existingsubnet == null)
+                {
+                    return NotFound($"Subnet with ID {subnet.Id} not found");
+                }
+                existingsubnet.Name = subnet.Name;
+                existingsubnet.Cidr = subnet.Cidr;
+                existingsubnet.Hosts = subnet.Hosts;
+                existingsubnet.Description = subnet.Description;
+                existingsubnet.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPost]
         [Route("/subnets")]

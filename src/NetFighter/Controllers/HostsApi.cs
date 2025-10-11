@@ -41,10 +41,14 @@ namespace NetFighter.Controllers
                 {
                     return BadRequest("Host ID is required");
                 }
-                var host = await _context.Hosts.FindAsync(id);
-                _context.Hosts.Remove(host);
+                var existinghost = await _context.Hosts.FindAsync(id);
+                if (existinghost == null)
+                {
+                    return NotFound($"Host with ID {id} not found");
+                }
+                _context.Hosts.Remove(existinghost);
                 await _context.SaveChangesAsync();
-                return StatusCode(204);
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -121,14 +125,20 @@ namespace NetFighter.Controllers
         {
             try
             {
-                Hosts updatedHost = await _context.Hosts.FindAsync(host.Id);
-                if (updatedHost == null)
+                if (host.Id <= 0)
                 {
-                    return NotFound();
+                    return BadRequest("Host ID is required");
                 }
-                _context.Hosts.Update(new Hosts() { Ip = host.Ip, Info = host.Info });
+                var existinghost = await _context.Hosts.FindAsync(host.Id);
+                if (existinghost == null)
+                {
+                    return NotFound($"Host with ID {host.Id} not found");
+                }
+                existinghost.Ip = host.Ip;
+                existinghost.Info = host.Info;
+                existinghost.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
-                return StatusCode(204);
+                return NoContent();
             }
             catch (Exception ex)
             {

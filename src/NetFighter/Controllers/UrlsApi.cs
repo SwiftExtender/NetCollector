@@ -35,8 +35,26 @@ namespace NetFighter.Controllers
         [SwaggerOperation("UrlsDelete")]
         public async Task<IActionResult> UrlsDelete(int id)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest("Url ID is required");
+                }
+                var existingurl = await _context.Urls.FindAsync(id);
+                if (existingurl == null)
+                {
+                    return NotFound($"Url with ID {id} not found");
+                }
+                _context.Urls.Remove(existingurl);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpGet]
         [Route("/urls")]

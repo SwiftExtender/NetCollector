@@ -38,12 +38,16 @@ namespace NetFighter.Controllers
             {
                 if (id <= 0)
                 {
-                    return BadRequest("Port ID is required");
+                    return BadRequest("Note ID is required");
                 }
-                var host = await _context.Hosts.FindAsync(id);
-                _context.Hosts.Remove(host);
+                var existingnote = await _context.Notes.FindAsync(id);
+                if (existingnote == null)
+                {
+                    return NotFound($"Note with ID {id} not found");
+                }
+                _context.Notes.Remove(existingnote);
                 await _context.SaveChangesAsync();
-                return StatusCode(204);
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -114,14 +118,24 @@ namespace NetFighter.Controllers
         [Route("/notes")]
         [ValidateModelState]
         [SwaggerOperation("PatchNotes")]
-        public async Task<IActionResult> NotesPatch([FromBody] UpdatedPort port)
+        public async Task<IActionResult> NotesPatch([FromBody] Notes note)
         {
             try
             {
-                Notes note = new Notes() { };
-                _context.Notes.Update(note);
+                if (note.Id <= 0)
+                {
+                    return BadRequest("Port ID is required");
+                }
+                var existingnote = await _context.Notes.FindAsync(note.Id);
+                if (existingnote == null)
+                {
+                    return NotFound($"Port with ID {note.Id} not found");
+                }
+                existingnote.Text = note.Text;
+                existingnote.Date= note.Date;
+                existingnote.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
-                return StatusCode(200);
+                return NoContent();
             }
             catch (Exception ex)
             {

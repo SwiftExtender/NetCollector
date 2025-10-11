@@ -34,63 +34,28 @@ namespace NetFighter.Controllers
         [SwaggerOperation("PortsDelete")]
         public async Task<IActionResult> PortsDelete(int id)
         {
-            try
             {
-                if (id <= 0)
+                try
                 {
-                    return BadRequest("Port ID is required");
+                    if (id <= 0)
+                    {
+                        return BadRequest("Port ID is required");
+                    }
+                    var existingport = await _context.Ports.FindAsync(id);
+                    if (existingport == null)
+                    {
+                        return NotFound($"Port with ID {id} not found");
+                    }
+                    _context.Ports.Remove(existingport);
+                    await _context.SaveChangesAsync();
+                    return NoContent();
                 }
-                var host = await _context.Hosts.FindAsync(id);
-                _context.Hosts.Remove(host);
-                await _context.SaveChangesAsync();
-                return StatusCode(204);
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return StatusCode(500, new { ex.Message });
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, new { ex.Message });
-            }
-        }
-        [HttpGet]
-        [Route("/host/{id}/ports")]
-        [ValidateModelState]
-        [SwaggerOperation("GetHostPorts")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<Ports>), description: "OK")]
-        public async Task<IActionResult> GetHostPorts(int id)
-        {
-            return StatusCode(200);
-            //try
-            //{
-            //    // Start with base query
-            //    var query = _context.Ports.AsQueryable();
-
-            //    // Get total count for pagination metadata
-            //    var totalCount = await query.CountAsync();
-
-            //    // Apply pagination
-            //    var ports = await query
-            //        .OrderBy(h => h.Id)
-            //        .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
-            //        .Take(queryParams.PageSize)
-            //        .ToListAsync();
-
-            //    // Create response with pagination metadata
-            //    var response = new PagedResponse<Ports>
-            //    {
-            //        Data = ports,
-            //        PageNumber = queryParams.PageNumber,
-            //        PageSize = queryParams.PageSize,
-            //        TotalCount = totalCount,
-            //        TotalPages = (int)Math.Ceiling(totalCount / (double)queryParams.PageSize)
-            //    };
-
-            //    return Ok(response);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex.Message);
-            //    return StatusCode(500, new { ex.Message });
-            //}
         }
 
         [HttpGet]
@@ -134,14 +99,25 @@ namespace NetFighter.Controllers
         [Route("/ports")]
         [ValidateModelState]
         [SwaggerOperation("PatchPorts")]
-        public async Task<IActionResult> PortsPatch([FromBody] UpdatedPort port)
+        public async Task<IActionResult> PortsPatch([FromBody] Ports port)
         {
             try
             {
-                Ports changedPort = new Ports() { Id = port.Id, HostId = port.HostId, Number = port.Number, Protocol = port.Protocol, Info = port.Info};
-                _context.Ports.Update(changedPort);
+                if (port.Id <= 0)
+                {
+                    return BadRequest("Port ID is required");
+                }
+                var existingport = await _context.Ports.FindAsync(port.Id);
+                if (existingport == null)
+                {
+                    return NotFound($"Port with ID {port.Id} not found");
+                }
+                existingport.Number = port.Number;
+                existingport.Protocol  = port.Protocol;
+                existingport.Info  = port.Info;
+                existingport.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
-                return StatusCode(200);
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -153,11 +129,11 @@ namespace NetFighter.Controllers
         [Route("/ports")]
         [ValidateModelState]
         [SwaggerOperation("AddPorts")]
-        public async Task<IActionResult> PortsPost([FromBody] CreatedPort port)
+        public async Task<IActionResult> PortsPost([FromBody] Ports port)
         {
             try
             {
-                Ports createdPort = new Ports() { HostId = port.HostId, Number = port.Number, Info = port.Info, Protocol = port.Protocol };
+                Ports createdPort = new Ports() { HostId = port.HostId, Number = port.Number, Info = port.Info, Protocol = port.Protocol, CreatedAt = DateTime.UtcNow };
                 _context.Ports.Add(createdPort);
                 await _context.SaveChangesAsync();
                 return StatusCode(201);

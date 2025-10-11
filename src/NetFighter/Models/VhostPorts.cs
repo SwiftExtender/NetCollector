@@ -29,8 +29,8 @@ namespace NetFighter.Models
         public DateTime CreatedAt { get; set; }
         [DataMember(Name = "updated_at", EmitDefaultValue = false)]
         public DateTime UpdatedAt { get; set; }
-        public Ports Ports { get; }
-        public Vhosts Vhosts { get; }
+        public Ports Ports { get; set; }
+        public Vhosts Vhosts { get; set; }
         public override string ToString()
         {
             var sb = new StringBuilder();

@@ -32,7 +32,7 @@ namespace NetFighter.Controllers
         [Route("/keywords/{id}")]
         [ValidateModelState]
         [SwaggerOperation("KeywordsDelete")]
-        [SwaggerResponse(statusCode: 204, type: typeof(List<Hosts>), description: "Delete keyword")]
+        [SwaggerResponse(statusCode: 204, description: "Delete keyword")]
         public async Task<IActionResult> KeywordsDelete(int id)
         {
             try
@@ -41,10 +41,14 @@ namespace NetFighter.Controllers
                 {
                     return BadRequest("Keyword ID is required");
                 }
-                var keyword = await _context.Keywords.FindAsync(id);
-                _context.Keywords.Remove(keyword);
+                var existingkeyword = await _context.Keywords.FindAsync(id);
+                if (existingkeyword == null)
+                {
+                    return NotFound($"Keyword with ID {id} not found");
+                }
+                _context.Keywords.Remove(existingkeyword);
                 await _context.SaveChangesAsync();
-                return StatusCode(204);
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -96,10 +100,32 @@ namespace NetFighter.Controllers
         [Route("/keywords")]
         [ValidateModelState]
         [SwaggerOperation("KeywordsPatch")]
-        public async Task<IActionResult> KeywordsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "source")]string source, [FromQuery (Name = "info")]string info, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Keywords keywords)
+        public async Task<IActionResult> KeywordsPatch([FromBody]Keywords keywords)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (keywords.Id <= 0)
+                {
+                    return BadRequest("Keyword ID is required");
+                }
+                var existingkeyword = await _context.Keywords.FindAsync(keywords.Id);
+                if (existingkeyword == null)
+                {
+                    return NotFound($"Keyword with ID {keywords.Id} not found");
+                }
+                existingkeyword.Name = keywords.Name;
+                existingkeyword.Source = keywords.Source;
+                existingkeyword.SourceType = keywords.SourceType;
+                existingkeyword.Info = keywords.Info;
+                existingkeyword.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPost]
         [Route("/keywords")]

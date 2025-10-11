@@ -29,7 +29,7 @@ namespace NetFighter.Models
         public DateTime CreatedAt { get; set; }
         [DataMember(Name = "updated_at", EmitDefaultValue = false)]
         public DateTime UpdatedAt { get; set; }
-        public ICollection<Requests> Requests { get; }
+        public ICollection<Requests> Requests { get; set; }
         public override string ToString()
         {
             var sb = new StringBuilder();

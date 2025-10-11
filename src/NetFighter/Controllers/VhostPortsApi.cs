@@ -31,12 +31,29 @@ namespace NetFighter.Controllers
         }
         [HttpDelete]
         [Route("/vhost_ports/{id}")]
-        [ValidateModelState]
         [SwaggerOperation("VhostPortsDelete")]
         public async Task<IActionResult> VhostPortsDelete(int id)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest("VhostPorts ID is required");
+                }
+                var existingVhostPorts = await _context.VhostsPorts.FindAsync(id);
+                if (existingVhostPorts == null)
+                {
+                    return NotFound($"VhostPorts with ID {id} not found");
+                }
+                _context.VhostsPorts.Remove(existingVhostPorts);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpGet]
         [Route("/vhost_ports")]

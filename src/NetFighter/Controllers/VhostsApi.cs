@@ -30,12 +30,29 @@ namespace NetFighter.Controllers
         }
         [HttpDelete]
         [Route("/vhosts/{id}")]
-        [ValidateModelState]
         [SwaggerOperation("VhostsDelete")]
         public async Task<IActionResult> VhostsDelete(int id)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest("Vhost ID is required");
+                }
+                var existingvhost = await _context.Vhosts.FindAsync(id);
+                if (existingvhost == null)
+                {
+                    return NotFound($"Vhost with ID {id} not found");
+                }
+                _context.Vhosts.Remove(existingvhost);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpGet]
         [Route("/vhosts")]

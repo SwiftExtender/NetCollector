@@ -34,8 +34,28 @@ namespace NetFighter.Controllers
         [SwaggerOperation("ScanProfilesDelete")]
         public async Task<IActionResult> ScanProfilesDelete(int id)
         {
-
-            throw new NotImplementedException();
+            {
+                try
+                {
+                    if (id <= 0)
+                    {
+                        return BadRequest("Scan Profile ID is required");
+                    }
+                    var existingScanProfile = await _context.ScanProfiles.FindAsync(id);
+                    if (existingScanProfile == null)
+                    {
+                        return NotFound($"Scan Profile with ID {id} not found");
+                    }
+                    _context.ScanProfiles.Remove(existingScanProfile);
+                    await _context.SaveChangesAsync();
+                    return NoContent();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return StatusCode(500, new { ex.Message });
+                }
+            }
         }
         [HttpGet]
         [Route("/scan_profiles")]
@@ -81,10 +101,30 @@ namespace NetFighter.Controllers
         [Route("/scan_profiles")]
         [ValidateModelState]
         [SwaggerOperation("ScanProfilesPatch")]
-        public async Task<IActionResult> ScanProfilesPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "description")]string description, [FromQuery (Name = "created_at")]string createdAt, [FromHeader (Name = "Prefer")]string prefer, [FromBody]ScanProfiles scanProfiles)
+        public async Task<IActionResult> ScanProfilesPatch([FromBody]ScanProfiles scanProfile)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (scanProfile.Id <= 0)
+                {
+                    return BadRequest("ScanProfile ID is required");
+                }
+                var existingScanProfile = await _context.ScanProfiles.FindAsync(scanProfile.Id);
+                if (existingScanProfile == null)
+                {
+                    return NotFound($"ScanProfile with ID {scanProfile.Id} not found");
+                }
+                existingScanProfile.Name = scanProfile.Name;
+                existingScanProfile.Description = scanProfile.Description;
+                existingScanProfile.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
 
         [HttpPost]

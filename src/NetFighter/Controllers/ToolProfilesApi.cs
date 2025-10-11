@@ -31,8 +31,26 @@ namespace NetFighter.Controllers
         [SwaggerOperation("ToolProfilesDelete")]
         public async Task<IActionResult> StartupProfilesDelete(int id)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest("ToolProfile ID is required");
+                }
+                var existingToolProfile = await _context.ToolProfiles.FindAsync(id);
+                if (existingToolProfile == null)
+                {
+                    return NotFound($"ToolProfile with ID {id} not found");
+                }
+                _context.ToolProfiles.Remove(existingToolProfile);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpGet]
         [Route("/tool_profiles")]

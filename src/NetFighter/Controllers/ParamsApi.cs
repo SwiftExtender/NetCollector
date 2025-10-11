@@ -33,21 +33,27 @@ namespace NetFighter.Controllers
         [SwaggerOperation("ParamsDelete")]
         public async Task<IActionResult> ParamsDelete(int id)
         {
-            try
             {
-                if (id <= 0)
+                try
                 {
-                    return BadRequest("Param ID is required");
+                    if (id <= 0)
+                    {
+                        return BadRequest("Param ID is required");
+                    }
+                    var existingparam = await _context.Params.FindAsync(id);
+                    if (existingparam == null)
+                    {
+                        return NotFound($"Param with ID {id} not found");
+                    }
+                    _context.Params.Remove(existingparam);
+                    await _context.SaveChangesAsync();
+                    return NoContent();
                 }
-                var param = await _context.Params.FindAsync(id);
-                _context.Params.Remove(param);
-                await _context.SaveChangesAsync();
-                return StatusCode(204);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, new { ex.Message });
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return StatusCode(500, new { ex.Message });
+                }
             }
         }
         [HttpGet]
@@ -95,10 +101,31 @@ namespace NetFighter.Controllers
         [Route("/params")]
         [ValidateModelState]
         [SwaggerOperation("ParamsPatch")]
-        public async Task<IActionResult> ParamsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "value")]string value, [FromQuery (Name = "vhost_id")]string vhostId, [FromHeader (Name = "Prefer")]string prefer, [FromBody]Params varParams)
+        public async Task<IActionResult> ParamsPatch([FromBody]Params param)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (param.Id <= 0)
+                {
+                    return BadRequest("Port ID is required");
+                }
+                var existingparam = await _context.Params.FindAsync(param.Id);
+                if (existingparam == null)
+                {
+                    return NotFound($"Port with ID {param.Id} not found");
+                }
+                existingparam.Name = param.Name;
+                existingparam.Value = param.Value;
+                existingparam.Info = param.Info;
+                existingparam.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPost]
         [Route("/params")]

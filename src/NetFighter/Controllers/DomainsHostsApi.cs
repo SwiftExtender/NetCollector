@@ -97,10 +97,31 @@ namespace NetFighter.Controllers
         [Route("/domainshosts")]
         [ValidateModelState]
         [SwaggerOperation("DomainsHostsPatch")]
-        public async Task<IActionResult> DomainsHostsPatch([FromQuery (Name = "domain_id")]string domainId, [FromQuery (Name = "host_id")]string hostId, [FromHeader (Name = "Prefer")]string prefer, [FromBody]DomainsHosts domainsHosts)
+        public async Task<IActionResult> DomainsHostsPatch([FromBody] DomainsHosts domainsHosts)
         {
 
-            throw new NotImplementedException();
+            try
+            {
+                if (domainsHosts.Id <= 0)
+                {
+                    return BadRequest("domainsHosts ID is required");
+                }
+                var existingdomainsHosts = await _context.DomainsHosts.FindAsync(domainsHosts.Id);
+                if (existingdomainsHosts == null)
+                {
+                    return NotFound($"domainsHosts with ID {domainsHosts.Id} not found");
+                }
+                existingdomainsHosts.DomainId = domainsHosts.DomainId;
+                existingdomainsHosts.HostId = domainsHosts.HostId;
+                existingdomainsHosts.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPost]
         [Route("/domainshosts")]

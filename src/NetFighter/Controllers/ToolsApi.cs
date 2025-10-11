@@ -35,8 +35,26 @@ namespace NetFighter.Controllers
         [SwaggerOperation("ToolsDelete")]
         public async Task<IActionResult> ToolsDelete(int id)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest("Tool ID is required");
+                }
+                var existingtool = await _context.Tools.FindAsync(id);
+                if (existingtool == null)
+                {
+                    return NotFound($"Tool with ID {id} not found");
+                }
+                _context.Tools.Remove(existingtool);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpGet]
         [Route("/tools")]
