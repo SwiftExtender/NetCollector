@@ -15,7 +15,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace NetFighter.Controllers
 {
@@ -138,7 +137,8 @@ namespace NetFighter.Controllers
                     PortId = vhostPorts.PortId, 
                     VhostId = vhostPorts.VhostId, 
                     Ports = vhostPorts.Ports,
-                    Vhosts = vhostPorts.Vhosts
+                    Vhosts = vhostPorts.Vhosts,
+                    CreatedAt = DateTime.UtcNow
                 });
                 await _context.SaveChangesAsync();
                 return StatusCode(201);

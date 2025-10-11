@@ -136,8 +136,11 @@ namespace NetFighter.Controllers
             try
             {
                 _context.Urls.Add(new Urls() { 
-                    Info = urls.Info, //Requests = urls.Requests, 
-                    Url = urls.Url, VhostId = urls.VhostId
+                    Info = urls.Info, 
+                    Requests = urls.Requests, 
+                    Url = urls.Url, 
+                    VhostId = urls.VhostId, 
+                    CreatedAt = DateTime.UtcNow
                 });
                 await _context.SaveChangesAsync();
                 return StatusCode(201);

@@ -62,7 +62,7 @@ namespace NetFighter.Controllers
         [Route("/ports/{id}")]
         [ValidateModelState]
         [SwaggerOperation("GetPort")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<Ports>), description: "OK")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Ports>))]
         public async Task<IActionResult> GetPort(int id)
         {
             try
@@ -133,7 +133,13 @@ namespace NetFighter.Controllers
         {
             try
             {
-                Ports createdPort = new Ports() { HostId = port.HostId, Number = port.Number, Info = port.Info, Protocol = port.Protocol, CreatedAt = DateTime.UtcNow };
+                Ports createdPort = new Ports() { 
+                    HostId = port.HostId, 
+                    Number = port.Number, 
+                    Info = port.Info, 
+                    Protocol = port.Protocol, 
+                    CreatedAt = DateTime.UtcNow 
+                };
                 _context.Ports.Add(createdPort);
                 await _context.SaveChangesAsync();
                 return StatusCode(201);

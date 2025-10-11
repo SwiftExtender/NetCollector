@@ -138,7 +138,8 @@ namespace NetFighter.Controllers
                 _context.Params.Add(new Params() { 
                     Name = param.Name,
                     Value = param.Value,
-                    //Id 
+                    Info = param.Info,
+                    CreatedAt = DateTime.UtcNow
                 });
                 await _context.SaveChangesAsync();
                 return StatusCode(201);

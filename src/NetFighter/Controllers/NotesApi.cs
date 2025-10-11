@@ -151,7 +151,11 @@ namespace NetFighter.Controllers
         {
             try
             {
-                Notes createdNote = new Notes() { Date = DateTime.UtcNow, Text = note.Text };
+                Notes createdNote = new Notes() { 
+                    Date = DateTime.UtcNow, 
+                    Text = note.Text,
+                    CreatedAt = DateTime.UtcNow
+                };
                 _context.Notes.Add(createdNote);
                 await _context.SaveChangesAsync();
                 return StatusCode(201);

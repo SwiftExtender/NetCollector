@@ -129,8 +129,22 @@ namespace NetFighter.Controllers
         [SwaggerOperation("DomainsHostsPost")]
         public async Task<IActionResult> DomainsHostsPost([FromBody]DomainsHosts domainsHosts)
         {
-
-            throw new NotImplementedException();
+            try
+            {
+                _context.DomainsHosts.Add(new DomainsHosts() { DomainId = domainsHosts.DomainId,
+                    HostId = domainsHosts.HostId, 
+                    Domains = domainsHosts.Domains, 
+                    Hosts = domainsHosts.Hosts, 
+                    CreatedAt = DateTime.UtcNow 
+                });
+                await _context.SaveChangesAsync();
+                return StatusCode(201);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
     }
 }

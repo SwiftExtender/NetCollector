@@ -155,7 +155,7 @@ namespace NetFighter.Controllers
         {
             try
             {
-                _context.Hosts.Add(new Hosts() { Ip = host.Ip, Info = host.Info });//, Ports = host.Ports
+                _context.Hosts.Add(new Hosts() { Ip = host.Ip, Info = host.Info, Ports = host.Ports });
                 await _context.SaveChangesAsync();
                 return StatusCode(201);
             }

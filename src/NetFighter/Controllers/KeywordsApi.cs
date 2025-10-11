@@ -135,7 +135,13 @@ namespace NetFighter.Controllers
         {
             try
             {
-                _context.Keywords.Add(new Keywords() { Info = keywords.Info, Name = keywords.Name, Source = keywords.Source, SourceType = keywords.SourceType });
+                _context.Keywords.Add(new Keywords() { 
+                    Info = keywords.Info, 
+                    Name = keywords.Name, 
+                    Source = keywords.Source, 
+                    SourceType = keywords.SourceType,
+                    CreatedAt = DateTime.UtcNow
+                });
                 await _context.SaveChangesAsync();
                 return StatusCode(201);
             }

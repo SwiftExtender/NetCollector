@@ -136,9 +136,10 @@ namespace NetFighter.Controllers
             {
                 _context.Subnets.Add(new Subnets() { 
                     Name = subnets.Name,
-                    //Hosts = subnets.Hosts,
+                    Hosts = subnets.Hosts,
                     Description = subnets.Description,
-                    Cidr = subnets.Cidr
+                    Cidr = subnets.Cidr,
+                    CreatedAt = DateTime.UtcNow
                 });
                 await _context.SaveChangesAsync();
                 return StatusCode(201);

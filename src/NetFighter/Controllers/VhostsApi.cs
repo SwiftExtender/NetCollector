@@ -135,8 +135,8 @@ namespace NetFighter.Controllers
             try
             {
                 _context.Vhosts.Add(new Vhosts() { 
-                    Info = vhosts.Info, Name = vhosts.Name//, Params = vhosts.Params,
-                    //Urls = vhosts.Urls, VhostPorts = vhosts.VhostPorts
+                    Info = vhosts.Info, Name = vhosts.Name, Params = vhosts.Params,
+                    Urls = vhosts.Urls, VhostPorts = vhosts.VhostPorts
                 });
                 await _context.SaveChangesAsync();
                 return StatusCode(201);

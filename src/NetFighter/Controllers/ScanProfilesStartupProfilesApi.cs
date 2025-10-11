@@ -137,7 +137,8 @@ namespace NetFighter.Controllers
                 _context.ScanProfilesToolProfiles.Add(new ScanProfilesToolProfiles() {
                     StartupProfileId = scanProfilesStartupProfiles.StartupProfileId, 
                     ScanProfileId = scanProfilesStartupProfiles.ScanProfileId, 
-                    Order = scanProfilesStartupProfiles.Order                
+                    Order = scanProfilesStartupProfiles.Order,
+                    CreatedAt = DateTime.UtcNow
                 });
                 await _context.SaveChangesAsync();
                 return StatusCode(201);
