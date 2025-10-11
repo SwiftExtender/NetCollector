@@ -42,15 +42,40 @@ namespace NetFighter.Controllers
         [ValidateModelState]
         [SwaggerOperation("ScanProfilesGet")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<ScanProfiles>), description: "OK")]
-        public async Task<IActionResult> ScanProfilesGet([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "description")]string description, [FromQuery (Name = "created_at")]string createdAt, [FromQuery (Name = "select")]string select, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Range")]string range, [FromHeader (Name = "Range-Unit")]string rangeUnit, [FromQuery (Name = "offset")]string offset, [FromQuery (Name = "limit")]string limit, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> ScanProfilesGet([FromQuery] PaginationRequestModels queryParams)
         {
-            string exampleJson = null;
-            exampleJson = "[ {\r\n  \"name\" : \"name\",\r\n  \"description\" : \"description\",\r\n  \"created_at\" : \"CURRENT_TIMESTAMP\",\r\n  \"id\" : 0\r\n}, {\r\n  \"name\" : \"name\",\r\n  \"description\" : \"description\",\r\n  \"created_at\" : \"CURRENT_TIMESTAMP\",\r\n  \"id\" : 0\r\n} ]";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<ScanProfiles>>(exampleJson)
-            : default(List<ScanProfiles>);
-            return new ObjectResult(example);
+            try
+            {
+                // Start with base query
+                var query = _context.ScanProfiles.AsQueryable();
+
+                // Get total count for pagination metadata
+                var totalCount = await query.CountAsync();
+
+                // Apply pagination
+                var scanProfiles = await query
+                    .OrderBy(h => h.Id)
+                    .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
+                    .Take(queryParams.PageSize)
+                    .ToListAsync();
+
+                // Create response with pagination metadata
+                var response = new PagedResponse<ScanProfiles>
+                {
+                    Data = scanProfiles,
+                    PageNumber = queryParams.PageNumber,
+                    PageSize = queryParams.PageSize,
+                    TotalCount = totalCount,
+                    TotalPages = (int)Math.Ceiling(totalCount / (double)queryParams.PageSize)
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPatch]
         [Route("/scan_profiles")]

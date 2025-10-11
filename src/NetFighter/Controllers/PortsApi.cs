@@ -1,19 +1,20 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NetFighter.Attributes;
+using NetFighter.Data;
+using NetFighter.Models;
+using NetFighter.Models.ResponseModels;
+using NetFighter.RequestModels;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Newtonsoft.Json;
-using NetFighter.Attributes;
-using NetFighter.Models;
-using Microsoft.EntityFrameworkCore;
-using NetFighter.Data;
 using System.Linq;
-using NetFighter.RequestModels;
+using System.Threading.Tasks;
 
 namespace NetFighter.Controllers
 {
@@ -51,22 +52,45 @@ namespace NetFighter.Controllers
             }
         }
         [HttpGet]
-        [Route("/host/{hostId}/ports")]
+        [Route("/host/{id}/ports")]
         [ValidateModelState]
         [SwaggerOperation("GetHostPorts")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<Ports>), description: "OK")]
-        public async Task<IActionResult> GetHostPorts(int hostId)
+        public async Task<IActionResult> GetHostPorts(int id)
         {
-            try
-            {
-                var selectedPort = await _context.Ports.Where(p => p.HostId.Equals(hostId)).ToListAsync();
-                return Ok(selectedPort);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, new { ex.Message });
-            }
+            return StatusCode(200);
+            //try
+            //{
+            //    // Start with base query
+            //    var query = _context.Ports.AsQueryable();
+
+            //    // Get total count for pagination metadata
+            //    var totalCount = await query.CountAsync();
+
+            //    // Apply pagination
+            //    var ports = await query
+            //        .OrderBy(h => h.Id)
+            //        .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
+            //        .Take(queryParams.PageSize)
+            //        .ToListAsync();
+
+            //    // Create response with pagination metadata
+            //    var response = new PagedResponse<Ports>
+            //    {
+            //        Data = ports,
+            //        PageNumber = queryParams.PageNumber,
+            //        PageSize = queryParams.PageSize,
+            //        TotalCount = totalCount,
+            //        TotalPages = (int)Math.Ceiling(totalCount / (double)queryParams.PageSize)
+            //    };
+
+            //    return Ok(response);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex.Message);
+            //    return StatusCode(500, new { ex.Message });
+            //}
         }
 
         [HttpGet]

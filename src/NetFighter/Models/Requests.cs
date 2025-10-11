@@ -21,9 +21,6 @@ namespace NetFighter.Models
         [DataMember(Name="url_id", EmitDefaultValue=true)]
         public int UrlId { get; set; }
         [Required]
-        [DataMember(Name="created_at", EmitDefaultValue=false)]
-        public string CreatedAt { get; set; } = "CURRENT_TIMESTAMP";
-        [Required]
         [DataMember(Name="method", EmitDefaultValue=false)]
         public string Method { get; set; }
         [DataMember(Name="status", EmitDefaultValue=true)]
@@ -36,6 +33,10 @@ namespace NetFighter.Models
         [Required]
         [DataMember(Name="raw_request", EmitDefaultValue=false)]
         public string RawRequest { get; set; }
+        [DataMember(Name = "created_at", EmitDefaultValue = false)]
+        public DateTime CreatedAt { get; set; }
+        [DataMember(Name = "updated_at", EmitDefaultValue = false)]
+        public DateTime UpdatedAt { get; set; }
         public override string ToString()
         {
             var sb = new StringBuilder();

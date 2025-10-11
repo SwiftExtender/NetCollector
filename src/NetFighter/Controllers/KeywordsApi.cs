@@ -1,15 +1,19 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NetFighter.Attributes;
 using NetFighter.Data;
 using NetFighter.Models;
+using NetFighter.Models.ResponseModels;
+using NetFighter.RequestModels;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NetFighter.Controllers
@@ -53,15 +57,40 @@ namespace NetFighter.Controllers
         [ValidateModelState]
         [SwaggerOperation("KeywordsGet")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<Keywords>), description: "OK")]
-        public async Task<IActionResult> KeywordsGet([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "source")]string source, [FromQuery (Name = "info")]string info, [FromQuery (Name = "select")]string select, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Range")]string range, [FromHeader (Name = "Range-Unit")]string rangeUnit, [FromQuery (Name = "offset")]string offset, [FromQuery (Name = "limit")]string limit, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> KeywordsGet([FromQuery] PaginationRequestModels queryParams)
         {
-            string exampleJson = null;
-            exampleJson = "[ {\r\n  \"name\" : \"name\",\r\n  \"id\" : 0,\r\n  \"source\" : \"{}\",\r\n  \"info\" : \"info\"\r\n}, {\r\n  \"name\" : \"name\",\r\n  \"id\" : 0,\r\n  \"source\" : \"{}\",\r\n  \"info\" : \"info\"\r\n} ]";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<Keywords>>(exampleJson)
-            : default(List<Keywords>);
-            return new ObjectResult(example);
+            try
+            {
+                // Start with base query
+                var query = _context.Keywords.AsQueryable();
+
+                // Get total count for pagination metadata
+                var totalCount = await query.CountAsync();
+
+                // Apply pagination
+                var keywords = await query
+                    .OrderBy(h => h.Id)
+                    .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
+                    .Take(queryParams.PageSize)
+                    .ToListAsync();
+
+                // Create response with pagination metadata
+                var response = new PagedResponse<Keywords>
+                {
+                    Data = keywords,
+                    PageNumber = queryParams.PageNumber,
+                    PageSize = queryParams.PageSize,
+                    TotalCount = totalCount,
+                    TotalPages = (int)Math.Ceiling(totalCount / (double)queryParams.PageSize)
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPatch]
         [Route("/keywords")]

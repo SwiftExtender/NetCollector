@@ -1,13 +1,17 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NetFighter.Attributes;
 using NetFighter.Data;
 using NetFighter.Models;
+using NetFighter.Models.ResponseModels;
+using NetFighter.RequestModels;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NetFighter.Controllers
@@ -51,15 +55,41 @@ namespace NetFighter.Controllers
         [ValidateModelState]
         [SwaggerOperation("ParamsGet")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<Params>), description: "OK")]
-        public async Task<IActionResult> ParamsGet([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "value")]string value, [FromQuery (Name = "vhost_id")]string vhostId, [FromQuery (Name = "select")]string select, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Range")]string range, [FromHeader (Name = "Range-Unit")]string rangeUnit, [FromQuery (Name = "offset")]string offset, [FromQuery (Name = "limit")]string limit, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> ParamsGet([FromQuery] PaginationRequestModels queryParams)
         {
-            string exampleJson = null;
-            exampleJson = "[ {\r\n  \"name\" : \"name\",\r\n  \"id\" : 0,\r\n  \"vhost_id\" : 6,\r\n  \"value\" : \"value\"\r\n}, {\r\n  \"name\" : \"name\",\r\n  \"id\" : 0,\r\n  \"vhost_id\" : 6,\r\n  \"value\" : \"value\"\r\n} ]";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<Params>>(exampleJson)
-            : default(List<Params>);
-            return new ObjectResult(example);
+            try
+            {
+                // Start with base query
+                var query = _context.Params.AsQueryable();
+
+                // Get total count for pagination metadata
+                var totalCount = await query.CountAsync();
+
+                // Apply pagination
+                var _params = await query
+                    .OrderBy(h => h.Id)
+                    .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
+                    .Take(queryParams.PageSize)
+                    .ToListAsync();
+
+                // Create response with pagination metadata
+                var response = new PagedResponse<Params>
+                {
+                    Data = _params,
+                    PageNumber = queryParams.PageNumber,
+                    PageSize = queryParams.PageSize,
+                    TotalCount = totalCount,
+                    TotalPages = (int)Math.Ceiling(totalCount / (double)queryParams.PageSize)
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
+            ;
         }
         [HttpPatch]
         [Route("/params")]

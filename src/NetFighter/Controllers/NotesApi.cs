@@ -1,19 +1,20 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NetFighter.Attributes;
+using NetFighter.Data;
+using NetFighter.Models;
+using NetFighter.Models.ResponseModels;
+using NetFighter.RequestModels;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Newtonsoft.Json;
-using NetFighter.Attributes;
-using NetFighter.Models;
-using Microsoft.EntityFrameworkCore;
-using NetFighter.Data;
 using System.Linq;
-using NetFighter.RequestModels;
+using System.Threading.Tasks;
 
 namespace NetFighter.Controllers
 {
@@ -74,12 +75,34 @@ namespace NetFighter.Controllers
         [Route("/notes")]
         [ValidateModelState]
         [SwaggerResponse(statusCode: 200, type: typeof(List<Notes>), description: "OK")]
-        public async Task<IActionResult> GetNotes()
+        public async Task<IActionResult> GetNotes([FromQuery] PaginationRequestModels queryParams)
         {
             try
             {
-                List<Notes> notes = await _context.Notes.ToListAsync();
-                return Ok(notes);
+                // Start with base query
+                var query = _context.Notes.AsQueryable();
+
+                // Get total count for pagination metadata
+                var totalCount = await query.CountAsync();
+
+                // Apply pagination
+                var notes = await query
+                    .OrderBy(h => h.Id)
+                    .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
+                    .Take(queryParams.PageSize)
+                    .ToListAsync();
+
+                // Create response with pagination metadata
+                var response = new PagedResponse<Notes>
+                {
+                    Data = notes,
+                    PageNumber = queryParams.PageNumber,
+                    PageSize = queryParams.PageSize,
+                    TotalCount = totalCount,
+                    TotalPages = (int)Math.Ceiling(totalCount / (double)queryParams.PageSize)
+                };
+
+                return Ok(response);
             }
             catch (Exception ex)
             {

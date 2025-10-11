@@ -42,15 +42,40 @@ namespace NetFighter.Controllers
         [ValidateModelState]
         [SwaggerOperation("VhostsGet")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<Vhosts>), description: "OK")]
-        public async Task<IActionResult> VhostsGet([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "info")]string info, [FromQuery (Name = "select")]string select, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Range")]string range, [FromHeader (Name = "Range-Unit")]string rangeUnit, [FromQuery (Name = "offset")]string offset, [FromQuery (Name = "limit")]string limit, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> VhostsGet([FromQuery] PaginationRequestModels queryParams)
         {
-            string exampleJson = null;
-            exampleJson = "[ {\r\n  \"name\" : \"name\",\r\n  \"id\" : 0,\r\n  \"info\" : \"info\"\r\n}, {\r\n  \"name\" : \"name\",\r\n  \"id\" : 0,\r\n  \"info\" : \"info\"\r\n} ]";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<Vhosts>>(exampleJson)
-            : default(List<Vhosts>);
-            return new ObjectResult(example);
+            try
+            {
+                // Start with base query
+                var query = _context.Vhosts.AsQueryable();
+
+                // Get total count for pagination metadata
+                var totalCount = await query.CountAsync();
+
+                // Apply pagination
+                var vhosts = await query
+                    .OrderBy(h => h.Id)
+                    .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
+                    .Take(queryParams.PageSize)
+                    .ToListAsync();
+
+                // Create response with pagination metadata
+                var response = new PagedResponse<Vhosts>
+                {
+                    Data = vhosts,
+                    PageNumber = queryParams.PageNumber,
+                    PageSize = queryParams.PageSize,
+                    TotalCount = totalCount,
+                    TotalPages = (int)Math.Ceiling(totalCount / (double)queryParams.PageSize)
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPatch]
         [Route("/vhosts")]

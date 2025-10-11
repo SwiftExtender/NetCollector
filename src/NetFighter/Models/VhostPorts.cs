@@ -25,7 +25,10 @@ namespace NetFighter.Models
         [Required]
         [DataMember(Name="port_id", EmitDefaultValue=true)]
         public int PortId { get; set; }
-
+        [DataMember(Name = "created_at", EmitDefaultValue = false)]
+        public DateTime CreatedAt { get; set; }
+        [DataMember(Name = "updated_at", EmitDefaultValue = false)]
+        public DateTime UpdatedAt { get; set; }
         public Ports Ports { get; }
         public Vhosts Vhosts { get; }
         public override string ToString()

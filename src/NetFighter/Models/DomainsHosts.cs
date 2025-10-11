@@ -35,7 +35,10 @@ namespace NetFighter.Models
         [Required]
         [DataMember(Name="host_id", EmitDefaultValue=true)]
         public int HostId { get; set; }
-
+        [DataMember(Name = "created_at", EmitDefaultValue = false)]
+        public DateTime CreatedAt { get; set; }
+        [DataMember(Name = "updated_at", EmitDefaultValue = false)]
+        public DateTime UpdatedAt { get; set; }
         public Domains Domains { get; set; }
         public Hosts Hosts { get; set; }
         public override string ToString()

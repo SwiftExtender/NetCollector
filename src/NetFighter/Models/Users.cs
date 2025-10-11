@@ -22,6 +22,10 @@ namespace NetFighter.Models
         [Required]
         [DataMember(Name = "passwordhash", EmitDefaultValue = false)]
         public string PasswordHash { get; set; }
+        [DataMember(Name = "created_at", EmitDefaultValue = false)]
+        public DateTime CreatedAt { get; set; }
+        [DataMember(Name = "updated_at", EmitDefaultValue = false)]
+        public DateTime UpdatedAt { get; set; }
         public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);

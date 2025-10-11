@@ -22,6 +22,12 @@ namespace NetFighter.Models
         public string Name { get; set; }
         [DataMember(Name="value", EmitDefaultValue=false)]
         public string Value { get; set; }
+        [DataMember(Name = "info", EmitDefaultValue = false)]
+        public string Info { get; set; }
+        [DataMember(Name = "created_at", EmitDefaultValue = false)]
+        public DateTime CreatedAt { get; set; }
+        [DataMember(Name = "updated_at", EmitDefaultValue = false)]
+        public DateTime UpdatedAt { get; set; }
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -29,6 +35,7 @@ namespace NetFighter.Models
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  Value: ").Append(Value).Append("\n");
+            sb.Append("  Info: ").Append(Info).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -50,7 +57,6 @@ namespace NetFighter.Models
             return
                 (
                     Id == other.Id ||
-
                     Id.Equals(other.Id)
                 ) &&
                 (
@@ -62,6 +68,10 @@ namespace NetFighter.Models
                     Value == other.Value ||
                     Value != null &&
                     Value.Equals(other.Value)
+                ) && (
+                    Info == other.Info ||
+                    Info != null &&
+                    Info.Equals(other.Info)
                 );
         }
         public override int GetHashCode()
@@ -73,8 +83,10 @@ namespace NetFighter.Models
                     hashCode = hashCode * 59 + Id.GetHashCode();
                     if (Name != null)
                     hashCode = hashCode * 59 + Name.GetHashCode();
-                    if (Value != null)
+                if (Value != null)
                     hashCode = hashCode * 59 + Value.GetHashCode();
+                    if (Info != null)
+                    hashCode = hashCode * 59 + Info.GetHashCode();
                 return hashCode;
             }
         }

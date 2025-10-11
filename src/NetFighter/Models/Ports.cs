@@ -28,6 +28,10 @@ namespace NetFighter.Models
         [Required]
         [DataMember(Name="protocol", EmitDefaultValue=false)]
         public string Protocol { get; set; }
+        [DataMember(Name = "created_at", EmitDefaultValue = false)]
+        public DateTime CreatedAt { get; set; }
+        [DataMember(Name = "updated_at", EmitDefaultValue = false)]
+        public DateTime UpdatedAt { get; set; }
         public ICollection<VhostsPorts>? VhostPorts { get; }
         public override string ToString()
         {

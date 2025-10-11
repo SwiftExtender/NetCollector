@@ -5,12 +5,15 @@ using Microsoft.EntityFrameworkCore;
 using NetFighter.Attributes;
 using NetFighter.Data;
 using NetFighter.Models;
+using NetFighter.Models.ResponseModels;
+using NetFighter.RequestModels;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
@@ -40,15 +43,39 @@ namespace NetFighter.Controllers
         [ValidateModelState]
         [SwaggerOperation("SubnetsGet")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<Subnets>), description: "OK")]
-        public async Task<IActionResult> SubnetsGet([FromQuery (Name = "id")]string id, [FromQuery (Name = "cidr")]string cidr, [FromQuery (Name = "name")]string name, [FromQuery (Name = "description")]string description, [FromQuery (Name = "select")]string select, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Range")]string range, [FromHeader (Name = "Range-Unit")]string rangeUnit, [FromQuery (Name = "offset")]string offset, [FromQuery (Name = "limit")]string limit, [FromHeader (Name = "Prefer")]string prefer)
-        {
-            string exampleJson = null;
-            exampleJson = "[ {\r\n  \"name\" : \"name\",\r\n  \"description\" : \"description\",\r\n  \"cidr\" : \"cidr\",\r\n  \"id\" : 0\r\n}, {\r\n  \"name\" : \"name\",\r\n  \"description\" : \"description\",\r\n  \"cidr\" : \"cidr\",\r\n  \"id\" : 0\r\n} ]";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<Subnets>>(exampleJson)
-            : default(List<Subnets>);
-            return new ObjectResult(example);
+        public async Task<IActionResult> SubnetsGet([FromQuery] PaginationRequestModels queryParams) {
+            try
+            {
+                // Start with base query
+                var query = _context.Subnets.AsQueryable();
+
+                // Get total count for pagination metadata
+                var totalCount = await query.CountAsync();
+
+                // Apply pagination
+                var subnets = await query
+                    .OrderBy(h => h.Id)
+                    .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
+                    .Take(queryParams.PageSize)
+                    .ToListAsync();
+
+                // Create response with pagination metadata
+                var response = new PagedResponse<Subnets>
+                {
+                    Data = subnets,
+                    PageNumber = queryParams.PageNumber,
+                    PageSize = queryParams.PageSize,
+                    TotalCount = totalCount,
+                    TotalPages = (int)Math.Ceiling(totalCount / (double)queryParams.PageSize)
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPatch]
         [Route("/subnets")]

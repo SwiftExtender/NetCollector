@@ -58,16 +58,12 @@ namespace NetFighter.Controllers
         [ValidateModelState]
         [SwaggerOperation("HostsGet")]
         [SwaggerResponse(statusCode: 200, type: typeof(PagedResponse<Hosts>), description: "Get paginated and filtered hosts")]
-        public async Task<IActionResult> HostsGet([FromQuery] HostsQueryParameters queryParams)
+        public async Task<IActionResult> HostsGet([FromQuery] PaginationRequestModels queryParams)
         {
             try
             {
                 // Start with base query
                 var query = _context.Hosts.AsQueryable();
-
-                // Apply filters
-                if (!string.IsNullOrEmpty(queryParams.Ip))
-                    query = query.Where(h => h.Ip.Contains(queryParams.Ip));
 
                 // Get total count for pagination metadata
                 var totalCount = await query.CountAsync();
@@ -97,7 +93,7 @@ namespace NetFighter.Controllers
                 return StatusCode(500, new { ex.Message });
             }
         }
-
+        //later
         //[HttpGet]
         //[Route("/hosts/{id}")]
         //[ValidateModelState]
@@ -121,7 +117,7 @@ namespace NetFighter.Controllers
         [Route("/hosts")]
         [ValidateModelState]
         [SwaggerOperation("HostsPatch")]
-        public async Task<IActionResult> HostsPatch([FromBody] UpdatedHost host)
+        public async Task<IActionResult> HostsPatch([FromBody] Hosts host)
         {
             try
             {
@@ -130,7 +126,7 @@ namespace NetFighter.Controllers
                 {
                     return NotFound();
                 }
-                _context.Hosts.Update(new Hosts() { Id = host.Id, Ip = host.Ip, Info = host.Info });
+                _context.Hosts.Update(new Hosts() { Ip = host.Ip, Info = host.Info });
                 await _context.SaveChangesAsync();
                 return StatusCode(204);
             }
@@ -145,11 +141,11 @@ namespace NetFighter.Controllers
         [Route("/hosts")]
         [ValidateModelState]
         [SwaggerOperation("HostsPost")]
-        public async Task<IActionResult> HostsPost([FromBody] CreatedHost host)
+        public async Task<IActionResult> HostsPost([FromBody] Hosts host)
         {
             try
             {
-                _context.Hosts.Add(new Hosts() { Ip = host.Ip, Info = host.Info });
+                _context.Hosts.Add(new Hosts() { Ip = host.Ip, Info = host.Info });//, Ports = host.Ports
                 await _context.SaveChangesAsync();
                 return StatusCode(201);
             }

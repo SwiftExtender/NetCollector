@@ -32,8 +32,10 @@ namespace NetFighter.Models
         public string Name { get; set; }
         [DataMember(Name="description", EmitDefaultValue=false)]
         public string Description { get; set; }
-        [DataMember(Name="created_at", EmitDefaultValue=false)]
+        [DataMember(Name = "created_at", EmitDefaultValue = false)]
         public DateTime CreatedAt { get; set; }
+        [DataMember(Name = "updated_at", EmitDefaultValue = false)]
+        public DateTime UpdatedAt { get; set; }
         public override string ToString()
         {
             var sb = new StringBuilder();

@@ -22,6 +22,10 @@ namespace NetFighter.Models
         public string Ip { get; set; }
         [DataMember(Name="info", EmitDefaultValue=false)]
         public string Info { get; set; }
+        [DataMember(Name = "created_at", EmitDefaultValue = false)]
+        public DateTime CreatedAt { get; set; }
+        [DataMember(Name = "updated_at", EmitDefaultValue = false)]
+        public DateTime UpdatedAt { get; set; }
         public ICollection<DomainsHosts> DomainsHosts { get; }
         public ICollection<Ports> Ports { get; }
         public override string ToString()
@@ -80,7 +84,6 @@ namespace NetFighter.Models
                 return hashCode;
             }
         }
-
         #region Operators
         #pragma warning disable 1591
 

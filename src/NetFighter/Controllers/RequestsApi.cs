@@ -1,15 +1,19 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NetFighter.Attributes;
 using NetFighter.Data;
 using NetFighter.Models;
+using NetFighter.Models.ResponseModels;
+using NetFighter.RequestModels;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
@@ -39,15 +43,40 @@ namespace NetFighter.Controllers
         [ValidateModelState]
         [SwaggerOperation("RequestsGet")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<Requests>), description: "OK")]
-        public async Task<IActionResult> RequestsGet([FromQuery (Name = "id")]string id, [FromQuery (Name = "url_id")]string urlId, [FromQuery (Name = "created_at")]string createdAt, [FromQuery (Name = "method")]string method, [FromQuery (Name = "status")]string status, [FromQuery (Name = "response")]string response, [FromQuery (Name = "info")]string info, [FromQuery (Name = "raw_request")]string rawRequest, [FromQuery (Name = "select")]string select, [FromQuery (Name = "order")]string order, [FromHeader (Name = "Range")]string range, [FromHeader (Name = "Range-Unit")]string rangeUnit, [FromQuery (Name = "offset")]string offset, [FromQuery (Name = "limit")]string limit, [FromHeader (Name = "Prefer")]string prefer)
+        public async Task<IActionResult> RequestsGet([FromQuery] PaginationRequestModels queryParams)
         {
-            string exampleJson = null;
-            exampleJson = "[ {\r\n  \"raw_request\" : \"raw_request\",\r\n  \"method\" : \"method\",\r\n  \"response\" : \"response\",\r\n  \"created_at\" : \"CURRENT_TIMESTAMP\",\r\n  \"id\" : 0,\r\n  \"url_id\" : 6,\r\n  \"status\" : 1,\r\n  \"info\" : \"info\"\r\n}, {\r\n  \"raw_request\" : \"raw_request\",\r\n  \"method\" : \"method\",\r\n  \"response\" : \"response\",\r\n  \"created_at\" : \"CURRENT_TIMESTAMP\",\r\n  \"id\" : 0,\r\n  \"url_id\" : 6,\r\n  \"status\" : 1,\r\n  \"info\" : \"info\"\r\n} ]";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<Requests>>(exampleJson)
-            : default(List<Requests>);
-            return new ObjectResult(example);
+            try
+            {
+                // Start with base query
+                var query = _context.Requests.AsQueryable();
+
+                // Get total count for pagination metadata
+                var totalCount = await query.CountAsync();
+
+                // Apply pagination
+                var requests = await query
+                    .OrderBy(h => h.Id)
+                    .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
+                    .Take(queryParams.PageSize)
+                    .ToListAsync();
+
+                // Create response with pagination metadata
+                var response = new PagedResponse<Requests>
+                {
+                    Data = requests,
+                    PageNumber = queryParams.PageNumber,
+                    PageSize = queryParams.PageSize,
+                    TotalCount = totalCount,
+                    TotalPages = (int)Math.Ceiling(totalCount / (double)queryParams.PageSize)
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
         }
         [HttpPatch]
         [Route("/requests")]

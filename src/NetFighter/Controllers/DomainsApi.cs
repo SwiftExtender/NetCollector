@@ -6,12 +6,15 @@ using Microsoft.Extensions.Hosting;
 using NetFighter.Attributes;
 using NetFighter.Data;
 using NetFighter.Models;
+using NetFighter.Models.ResponseModels;
+using NetFighter.RequestModels;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NetFighter.Controllers
@@ -26,54 +29,116 @@ namespace NetFighter.Controllers
             _context = context;
         }
 
-        //[HttpDelete]
-        //[Route("domains/{id}")]
-        //[ValidateModelState]
-        //[SwaggerOperation("DomainsDelete")]
-        //public async Task<IActionResult> DomainsDelete([FromQuery] int id)
-        //{
-        //    try
-        //    {
-        //        if (id <= 0)
-        //        {
-        //            return BadRequest("Domain ID is required");
-        //        }
-        //        var domain = await _context.Domains.FindAsync(id);
-        //        _context.Domains.Remove(domain);
-        //        await _context.SaveChangesAsync();
-        //        return NoContent();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //        return StatusCode(500, new { ex.Message });
-        //    }
-        //}
+        [HttpDelete]
+        [Route("domains/{id}")]
+        [ValidateModelState]
+        [SwaggerOperation("DomainsDelete")]
+        public async Task<IActionResult> DomainsDelete(int id)
+        {
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest("Domain ID is required");
+                }
+                var existingdomain = await _context.Domains.FindAsync(id);
+                if (existingdomain == null)
+                {
+                    return NotFound($"Domain with ID {id} not found");
+                }
+                _context.Domains.Remove(existingdomain);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, new { ex.Message });
+            }
+        }
 
         [HttpGet]
         [Route("domains")]
         [ValidateModelState]
         [SwaggerOperation("DomainsGet")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<Domains>))]
-        public async Task<IActionResult> DomainsGet()
+        public async Task<IActionResult> DomainsGet([FromQuery] PaginationRequestModels queryParams)
         {
-            var allHosts = await _context.Domains.ToListAsync();
-            return Ok(allHosts);
+            {
+                try
+                {
+                    // Start with base query
+                    var query = _context.Domains.AsQueryable();
+
+                    // Get total count for pagination metadata
+                    var totalCount = await query.CountAsync();
+
+                    // Apply pagination
+                    var hosts = await query
+                        .OrderBy(h => h.Id)
+                        .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
+                        .Take(queryParams.PageSize)
+                        .ToListAsync();
+
+                    // Create response with pagination metadata
+                    var response = new PagedResponse<Domains>
+                    {
+                        Data = hosts,
+                        PageNumber = queryParams.PageNumber,
+                        PageSize = queryParams.PageSize,
+                        TotalCount = totalCount,
+                        TotalPages = (int)Math.Ceiling(totalCount / (double)queryParams.PageSize)
+                    };
+
+                    return Ok(response);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return StatusCode(500, new { ex.Message });
+                }
+            }
         }
+
+        [HttpGet]
+        [Route("domains/{id}")]
+        [ValidateModelState]
+        [SwaggerOperation("DomainGet")]
+        [SwaggerResponse(statusCode: 200, type: typeof(Domains))]
+        public async Task<IActionResult> DomainsGet(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Domain ID is required");
+            }
+            var existingdomain = await _context.Domains.FindAsync(id);
+            if (existingdomain == null)
+            {
+                return NotFound($"Domain with ID {id} not found");
+            }
+            return Ok(existingdomain);
+        }
+
         [HttpPatch]
         [Route("domains")]
         [ValidateModelState]
         [SwaggerOperation("DomainsPatch")]
-        public async Task<IActionResult> DomainsPatch([FromQuery (Name = "id")]string id, [FromQuery (Name = "name")]string name, [FromQuery (Name = "info")]string info, [FromBody]Domains domains)
+        public async Task<IActionResult> DomainsPatch([FromBody]Domains domains)
         {
             try
             {
-                if (string.IsNullOrEmpty(id))
+                if (domains.Id <= 0)
                 {
                     return BadRequest("Domain ID is required");
                 }
-                var domain = await _context.Domains.FindAsync(id);
-                _context.Domains.Update(domain);
+                var existingdomain = await _context.Domains.FindAsync(domains.Id);
+                if (existingdomain == null)
+                {
+                    return NotFound($"Domain with ID {domains.Id} not found");
+                }
+                existingdomain.Name = domains.Name;
+                existingdomain.Info = domains.Info;
+                existingdomain.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
                 return NoContent();
             }
